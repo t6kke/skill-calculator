@@ -1,1 +1,1 @@
-# skill-calculator
+# Skill Calculator
