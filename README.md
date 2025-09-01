@@ -1,4 +1,4 @@
-![Genral Tests](https://github.com/t6kke/learn-cicd-starter/actions/workflows/ci_general_tests.yaml/badge.svg) ![Style Tests](https://github.com/t6kke/learn-cicd-starter/actions/workflows/ci_style_tests.yaml/badge.svg) ![Security Tests](https://github.com/t6kke/learn-cicd-starter/actions/workflows/ci_gosec.yaml/badge.svg)
+![Genral Tests](https://github.com/t6kke/skill-calculator/actions/workflows/ci_general_tests.yaml/badge.svg) ![Style Tests](https://github.com/t6kke/skill-calculator/actions/workflows/ci_style_tests.yaml/badge.svg) ![Security Tests](https://github.com/t6kke/skill-calculator/actions/workflows/ci_gosec.yaml/badge.svg)
 
 # Skill Calculator
 
