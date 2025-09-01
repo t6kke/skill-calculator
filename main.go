@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -15,7 +16,11 @@ type apiConfig struct {
 }
 
 func main() {
-	godotenv.Load()
+	err := godotenv.Load()
+	if err != nil {
+		log.Printf("Failed to load .env file parameters parameters. ERROR: %v", err)
+	}
+
 	platform := os.Getenv("PLATFORM")
 	if platform == "" {
 		log.Fatal("PLATFORM must be set")
@@ -30,6 +35,7 @@ func main() {
 	}
 
 	api_config := apiConfig{
+		platform: platform,
 		port:     port,
 		web_root: web_assets_root_folder,
 	}
@@ -38,11 +44,14 @@ func main() {
 	file_server := http.FileServer(http.Dir(api_config.web_root))
 	server_mux.Handle("/app/", http.StripPrefix("/app", file_server))
 
+	header_timeout := 30 * time.Second
 	server_struct := &http.Server{
-		Addr:    ":" + api_config.port,
-		Handler: server_mux,
+		Addr:              ":" + api_config.port,
+		Handler:           server_mux,
+		ReadHeaderTimeout: header_timeout,
 	}
 
+	log.Printf("Platform: %s", api_config.platform)
 	log.Printf("Serving files from %s on port: %s\n", api_config.web_root, port)
 	log.Fatal(server_struct.ListenAndServe())
 }
