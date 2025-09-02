@@ -21,8 +21,7 @@ end goal is to have this as standalone Docker image that you can just use or you
 
 ## v3
 
-- Initial DB setup done
-- 
+- Initial DB setup done, users can sign up on website
 
 ## v2
 
