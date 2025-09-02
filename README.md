@@ -19,6 +19,11 @@ end goal is to have this as standalone Docker image that you can just use or you
 
 # Change log
 
+## v3
+
+- Initial DB setup done
+- 
+
 ## v2
 
 - Initial ci automated testing for github workflows
