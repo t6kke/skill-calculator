@@ -1,13 +1,13 @@
 package auth
 
 import (
-	"fmt"
-	"time"
 	"errors"
+	"fmt"
 	"strconv"
+	"time"
 
-	"golang.org/x/crypto/bcrypt"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type TokenType string
@@ -27,8 +27,7 @@ func HashPassword(password string) (string, error) {
 func CheckPasswordHash(hash, password string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	if err != nil {
-		//return errors.New("Passowrd not matching")
-		return fmt.Errorf("Passowrd not matching %v", err)
+		return fmt.Errorf("passowrd not matching %v", err)
 	}
 	return nil
 }
@@ -53,7 +52,7 @@ func MakeJWT(user_id int, token_secret string, expires_in time.Duration) (string
 
 func ValidateJWT(token_string, token_secret string) (int, error) {
 	claimsStruct := jwt.RegisteredClaims{}
-	token, err := jwt.ParseWithClaims(token_secret, &claimsStruct, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(token_string, &claimsStruct, func(token *jwt.Token) (interface{}, error) {
 		return []byte(token_secret), nil
 	})
 	if err != nil {
@@ -77,5 +76,6 @@ func ValidateJWT(token_string, token_secret string) (int, error) {
 	if err != nil {
 		return 0, fmt.Errorf("invalid user ID: %w", err)
 	}
+
 	return return_user_id, nil
 }

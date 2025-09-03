@@ -2,6 +2,7 @@ package auth
 
 import (
 	"testing"
+	"time"
 )
 
 func TestCheckPasswordHash(t *testing.T) {
@@ -53,6 +54,54 @@ func TestCheckPasswordHash(t *testing.T) {
 			err := CheckPasswordHash(tt.hash, tt.password)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Test %d --- CheckPasswordHash() error = %v, wantErr %v", i+1, err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestCheckJWT(t *testing.T) {
+	user_id := 10
+	validToken, _ := MakeJWT(user_id, "secret", time.Hour)
+
+	tests := []struct {
+		name        string
+		tokenString string
+		tokenSecret string
+		wantUserID  int
+		wantErr     bool
+	}{
+		{
+			name:        "Valid token",
+			tokenString: validToken,
+			tokenSecret: "secret",
+			wantUserID:  user_id,
+			wantErr:     false,
+		},
+		{
+			name:        "Invalid token",
+			tokenString: "invalid.token.string",
+			tokenSecret: "secret",
+			wantUserID:  0,
+			wantErr:     true,
+		},
+		{
+			name:        "Wrong secret",
+			tokenString: validToken,
+			tokenSecret: "wrong_secret",
+			wantUserID:  0,
+			wantErr:     true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotUserID, err := ValidateJWT(tt.tokenString, tt.tokenSecret)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ValidateJWT() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotUserID != tt.wantUserID {
+				t.Errorf("ValidateJWT() gotUserID = %v, want %v", gotUserID, tt.wantUserID)
 			}
 		})
 	}

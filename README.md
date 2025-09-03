@@ -23,8 +23,11 @@ end goal is to have this as standalone Docker image that you can just use or you
 
 - No password is given back as ouput for user on signup
 - Internal auth package created for various authorization workflows
-- Password hashing added in auth.go, unit tests for it created
-- 
+- Password hashing added in authorization package, unit tests for it created
+- JWT creation and validation added to authorization package, unit tests created for it
+- Login end point create for server
+- Login functionality created in app.js and enabled for login button and on sign up fuction
+- Unit tests added to ci workflows
 - Database leagues table creation fixed for id field autoincrement
 
 ## v3
