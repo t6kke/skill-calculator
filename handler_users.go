@@ -34,5 +34,7 @@ func (api_config *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, user) //TODO do I need to respond with full user struct where password hash is in the content
+	user.Password = "***" //password masking for response, this is not needed to be sent back to the user
+
+	respondWithJSON(w, http.StatusCreated, user)
 }

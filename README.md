@@ -19,8 +19,21 @@ end goal is to have this as standalone Docker image that you can just use or you
 
 # Change log
 
+## v4
+
+- No password is given back as ouput for user on signup
+- Internal auth package created for various authorization workflows
+- Password hashing added in auth.go, unit tests for it created
+- 
+- Database leagues table creation fixed for id field autoincrement
+
 ## v3
 
+- Internal database package created for various database interactions
+- Initializing and creating new SQLite database file if needed
+- Create user to db and get user by e-mail functionality
+- New user creation endpoint created on go server
+- app.js for frontend created to interact with new endpoint
 - Initial DB setup done, users can sign up on website
 
 ## v2
