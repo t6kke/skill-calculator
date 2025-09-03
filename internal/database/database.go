@@ -41,12 +41,11 @@ func (c *Client) autoMigrate() error {
 
 	leaguesTable := `
 	CREATE TABLE IF NOT EXISTS leagues (
-		id INTEGER NOT NULL UNIQUE,
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		title TEXT NOT NULL,
-		description TEXT,
-		PRIMARY KEY("id" AUTOINCREMENT)
+		description TEXT
 	);
 	`
 	_, err = c.db.Exec(leaguesTable)
