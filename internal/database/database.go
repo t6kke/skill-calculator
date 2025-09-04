@@ -45,6 +45,7 @@ func (c *Client) autoMigrate() error {
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		title TEXT NOT NULL,
+		database_name TEXT NOT NULL,
 		description TEXT
 	);
 	`

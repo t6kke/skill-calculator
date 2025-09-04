@@ -3,7 +3,9 @@ package auth
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -78,4 +80,18 @@ func ValidateJWT(token_string, token_secret string) (int, error) {
 	}
 
 	return return_user_id, nil
+}
+
+func GetBearerToken(headers http.Header) (string, error) {
+	auth_token := headers.Get("Authorization")
+	if auth_token == "" {
+		return "", errors.New("no \"Authorization\" in header")
+	}
+
+	token_split := strings.Split(auth_token, " ")
+	if len(token_split) != 2 {
+		return "", errors.New("invalid token string format in \"Authorization\"")
+	}
+
+	return token_split[1], nil
 }
