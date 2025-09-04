@@ -3,15 +3,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (token) {
         document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('video-section').style.display = 'block';
+        document.getElementById('conent-section').style.display = 'block';
         await getVideos();
     } else {
         document.getElementById('auth-section').style.display = 'block';
-        document.getElementById('video-section').style.display = 'none';
+        document.getElementById('conent-section').style.display = 'none';
     }
 });
 
-document.getElementById('video-draft-form').addEventListener('submit', async (event) => {
+document.getElementById('league-handling-forms-examples').addEventListener('submit', async (event) => {
     event.preventDefault();
     await createVideoDraft();
 });
@@ -64,8 +64,8 @@ async function login() {
         if (data.token) {
             localStorage.setItem('token', data.token);
             document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('video-section').style.display = 'block';
-            await getVideos();
+            document.getElementById('conent-section').style.display = 'block';
+            //await getVideos();
         } else {
             alert('Login failed. Please check your credentials.');
         }

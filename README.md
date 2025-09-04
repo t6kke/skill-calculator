@@ -19,12 +19,19 @@ end goal is to have this as standalone Docker image that you can just use or you
 
 # Change log
 
+## v5
+
+- Fixed app.js "getElementById" errors
+- Added basic forms formatting css logic
+- Added get token function to go auth package and unit tests for it
+- initial prep for leage creation functionality
+
 ## v4
 
 - No password is given back as ouput for user on signup
 - Internal auth package created for various authorization workflows
-- Password hashing added in authorization package, unit tests for it created
-- JWT creation and validation added to authorization package, unit tests created for it
+- Password hashing added in auth package, unit tests for it created
+- JWT creation and validation added to auth package, unit tests created for it
 - Login end point create for server
 - Login functionality created in app.js and enabled for login button and on sign up fuction
 - Unit tests added to ci workflows
