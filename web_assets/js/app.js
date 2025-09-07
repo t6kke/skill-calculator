@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 document.getElementById('league-handling-forms-examples').addEventListener('submit', async (event) => {
     event.preventDefault();
-    await createVideoDraft();
+    await createLeague();
 });
 
 document.getElementById('login-form').addEventListener('submit', async (event) => {
@@ -71,5 +71,124 @@ async function login() {
         }
     } catch (error) {
         alert(`Error: ${error.message}`);
+    }
+}
+
+async function createLeague() {
+    const title = document.getElementById('league-title').value;
+    const description = document.getElementById('league-description').value;
+
+    try {
+        const res = await fetch('/api/leagues', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({ title, description }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(`Failed to create league: ${data.error}`);
+        }
+
+        const leagueID = data.id;
+        if (leagueID) {
+            await getLeague();
+            await leagueStateHandler(leagueID); //TODO do I need this?
+        }
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+}
+
+const leagueStateHandler = createLeagueStateHandler();
+
+async function getLeauge() {
+    try {
+        const res = await fetch('/api/leagues', {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed to get leagues. Error: ${data.error}`);
+        }
+
+        const leagues = await res.json();
+        const leagueList = document.getElementById('league-list');
+        leagueList.innerHTML = '';
+        for (const leauge of leauges) {
+            const listItem = document.createElement('li');
+            listItem.textContent = leauge.title;
+            listItem.onclick = () => leagueStateHandler(leauge.id);
+            leagueList.appendChild(listItem);
+        }
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+}
+
+function createLeagueStateHandler() {
+    let currentLeagueID = null;
+
+    return async function handleVideoClick(leagueID) {
+        if (currentLeagueID !== leagueID) {
+            currentLeagueID = leagueID;
+
+            // Reset file input values
+            document.getElementById('thumbnail').value = '';
+            document.getElementById('video-file').value = '';
+
+            await getLeague(leagueID);
+        }
+    };
+}
+
+async function getLeague(leagueID) {
+    try {
+        const res = await fetch(`/api/videos/${leagueID}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            throw new Error('Failed to get league.');
+        }
+
+        const league = await res.json();
+        viewLeague(league);
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+}
+
+function viewLeague(league) {
+    currentVideo = video;
+    document.getElementById('league-display').style.display = 'block';
+    document.getElementById('league-title-display').textContent = video.title;
+    document.getElementById('league-description-display').textContent = video.description;
+
+    const thumbnailImg = document.getElementById('thumbnail-image');
+    if (!video.thumbnail_url) {
+        thumbnailImg.style.display = 'none';
+    } else {
+        thumbnailImg.style.display = 'block';
+        thumbnailImg.src = video.thumbnail_url; //original
+        //thumbnailImg.src = `${video.thumbnail_url}?v=${Date.now()}`; //iniital cache break example
+    }
+
+    const videoPlayer = document.getElementById('video-player');
+    if (videoPlayer) {
+        if (!video.video_url) {
+            videoPlayer.style.display = 'none';
+        } else {
+            videoPlayer.style.display = 'block';
+            videoPlayer.src = video.video_url;
+            videoPlayer.load();
+        }
     }
 }

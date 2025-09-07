@@ -66,6 +66,9 @@ func main() {
 
 	server_mux.HandleFunc("POST /api/users", api_config.handlerUsersCreateOne)
 	server_mux.HandleFunc("POST /api/login", api_config.handlerLogin)
+	server_mux.HandleFunc("POST /api/leagues", api_config.handlerLeagueCreate)
+	server_mux.HandleFunc("GET /api/leagues", api_config.handlerLeaguesGetAllForUser)
+	server_mux.HandleFunc("GET /api/leagues/{videoID}", api_config.handlerLeagueGet)
 
 	header_timeout := 30 * time.Second
 	server_struct := &http.Server{

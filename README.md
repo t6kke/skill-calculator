@@ -19,12 +19,21 @@ end goal is to have this as standalone Docker image that you can just use or you
 
 # Change log
 
+## v6
+
+- Unuque database name generator created into internal database pacakge
+- Internal database package updated with League creattion, reteival by id and retreival for all based on currentl user
+- API endpoinds created for Leagues, for creation, retreival with specific id, retreival for specific user for all leagues
+- Website app.js fucntion to use new endpoint for creation of the leage
+- Main fuctionality of leages managment completed
+- Fixed issue with login response showing hashed password
+
 ## v5
 
 - Fixed app.js "getElementById" errors
 - Added basic forms formatting css logic
 - Added get token function to go auth package and unit tests for it
-- initial prep for leage creation functionality
+- Initial prep for leage creation functionality
 
 ## v4
 

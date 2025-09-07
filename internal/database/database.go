@@ -45,8 +45,8 @@ func (c *Client) autoMigrate() error {
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		title TEXT NOT NULL,
-		database_name TEXT NOT NULL,
-		description TEXT
+		description TEXT,
+		database_name TEXT NOT NULL
 	);
 	`
 	_, err = c.db.Exec(leaguesTable)
@@ -57,8 +57,8 @@ func (c *Client) autoMigrate() error {
 	leagues_usersTable := `
 	CREATE TABLE IF NOT EXISTS users_leagues (
 		user_id INTEGER NOT NULL,
-		leauge_id INTEGER NOT NULL,
-		UNIQUE("user_id","leauge_id")
+		league_id INTEGER NOT NULL,
+		UNIQUE("user_id","league_id")
 		);
 	`
 	_, err = c.db.Exec(leagues_usersTable)
