@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"time"
+	"log"
 )
 
 type League struct {
@@ -21,7 +22,6 @@ type CreateLeagueParams struct {
 }
 
 func (c Client) CreateLeageWithUserRelation(params CreateLeagueParams) (League, error) {
-	//TOTO create unique DB string
 	db_name, err := createUnuiqueDBName(&c)
 	if err != nil {
 		return League{}, err
@@ -46,6 +46,7 @@ func (c Client) CreateLeageWithUserRelation(params CreateLeagueParams) (League, 
 		return League{}, err
 	}
 	league_id, _ := result.LastInsertId() //TODO do error hanlding?
+	log.Print(league_id)
 
 	_, err = c.db.Exec(create_user_leage_relation_query, params.UserID, league_id)
 	if err != nil {
@@ -55,8 +56,10 @@ func (c Client) CreateLeageWithUserRelation(params CreateLeagueParams) (League, 
 
 	league, err := c.GetLeague(int(league_id))
 	if err != nil {
+		log.Print(err)
 		return League{}, err
 	}
+	log.Print(league)
 
 	return league, nil
 }
@@ -66,7 +69,7 @@ func (c Client) GetLeague(league_id int) (League, error) {
 	SELECT l.id, l.created_at, l.updated_at, l.title, l.description, l.database_name, ul.user_id
 	FROM leagues l
 	JOIN users_leagues ul on ul.league_id = l.id
-	where l.id = ?
+	WHERE l.id = ?
 	`
 
 	var league League
@@ -76,13 +79,14 @@ func (c Client) GetLeague(league_id int) (League, error) {
 		&league.UpdatedAt,
 		&league.Title,
 		&league.Description,
-		&league.UserID,
 		&league.DatabaseName,
+		&league.UserID,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return League{}, nil
 		}
+		log.Print(err)
 		return League{}, err
 	}
 
@@ -94,7 +98,7 @@ func (c Client) GetLeagues(user_id int) ([]League, error) {
 	SELECT l.id, l.created_at, l.updated_at, l.title, l.description, l.database_name, ul.user_id
 	FROM leagues l
 	JOIN users_leagues ul on ul.league_id = l.id
-	where ul.user_id = ?
+	WHERE ul.user_id = ?
 	`
 	rows, err := c.db.Query(query, user_id)
 	if err != nil {
@@ -112,13 +116,13 @@ func (c Client) GetLeagues(user_id int) ([]League, error) {
 		        &league.UpdatedAt,
 		        &league.Title,
 		        &league.Description,
-		        &league.UserID,
 		        &league.DatabaseName,
+		        &league.UserID,
 		); err != nil {
 			return nil, err
 		}
 		leagues = append(leagues, league)
 	}
 
-	return leagues[1:], nil
+	return leagues, nil
 }

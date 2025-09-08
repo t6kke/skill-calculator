@@ -55,16 +55,16 @@ func (api_config *apiConfig) handlerLeagueCreate(w http.ResponseWriter, r *http.
 
 
 func (api_config *apiConfig) handlerLeagueGet(w http.ResponseWriter, r *http.Request) {
-	video_id_string := r.PathValue("videoID")
-	video_id, err := strconv.Atoi(video_id_string)
+	league_id_string := r.PathValue("leagueID")
+	league_id, err := strconv.Atoi(league_id_string)
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid video ID", err)
+		respondWithError(w, http.StatusBadRequest, "Invalid leauge ID", err)
 		return
 	}
 
-	leauge, err := api_config.db.GetLeague(video_id)
+	leauge, err := api_config.db.GetLeague(league_id)
 	if err != nil {
-		respondWithError(w, http.StatusNotFound, "Couldn't get video", err)
+		respondWithError(w, http.StatusNotFound, "Couldn't get leauge", err)
 		return
 	}
 
