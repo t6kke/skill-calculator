@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"time"
-	"log"
 )
 
 type League struct {
@@ -46,7 +45,6 @@ func (c Client) CreateLeageWithUserRelation(params CreateLeagueParams) (League, 
 		return League{}, err
 	}
 	league_id, _ := result.LastInsertId() //TODO do error hanlding?
-	log.Print(league_id)
 
 	_, err = c.db.Exec(create_user_leage_relation_query, params.UserID, league_id)
 	if err != nil {
@@ -56,10 +54,8 @@ func (c Client) CreateLeageWithUserRelation(params CreateLeagueParams) (League, 
 
 	league, err := c.GetLeague(int(league_id))
 	if err != nil {
-		log.Print(err)
 		return League{}, err
 	}
-	log.Print(league)
 
 	return league, nil
 }
@@ -86,7 +82,6 @@ func (c Client) GetLeague(league_id int) (League, error) {
 		if errors.Is(err, sql.ErrNoRows) {
 			return League{}, nil
 		}
-		log.Print(err)
 		return League{}, err
 	}
 

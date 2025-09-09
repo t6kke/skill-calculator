@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-document.getElementById('league-handling-forms-examples').addEventListener('submit', async (event) => {
+document.getElementById('league-draft-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     await createLeague();
 });
@@ -65,13 +65,31 @@ async function login() {
             localStorage.setItem('token', data.token);
             document.getElementById('auth-section').style.display = 'none';
             document.getElementById('conent-section').style.display = 'block';
-            //await getVideos();
+            await getLeagues();
         } else {
             alert('Login failed. Please check your credentials.');
         }
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
+}
+
+const leagueStateHandler = createLeagueStateHandler();
+
+function createLeagueStateHandler() {
+    let currentLeagueID = null;
+
+    return async function handleVideoClick(leagueID) {
+        if (currentLeagueID !== leagueID) {
+            currentLeagueID = leagueID;
+
+            // Reset file input values
+            document.getElementById('thumbnail').value = '';
+            document.getElementById('video-file').value = '';
+
+            await getLeague(leagueID);
+        }
+    };
 }
 
 async function createLeague() {
@@ -94,7 +112,7 @@ async function createLeague() {
 
         const leagueID = data.id;
         if (leagueID) {
-            await getLeague();
+            await getLeagues();
             await leagueStateHandler(leagueID); //TODO do I need this?
         }
     } catch (error) {
@@ -102,9 +120,7 @@ async function createLeague() {
     }
 }
 
-const leagueStateHandler = createLeagueStateHandler();
-
-async function getLeauge() {
+async function getLeagues() {
     try {
         const res = await fetch('/api/leagues', {
             method: 'GET',
@@ -120,31 +136,15 @@ async function getLeauge() {
         const leagues = await res.json();
         const leagueList = document.getElementById('league-list');
         leagueList.innerHTML = '';
-        for (const leauge of leauges) {
+        for (const league of leagues) {
             const listItem = document.createElement('li');
-            listItem.textContent = leauge.title;
-            listItem.onclick = () => leagueStateHandler(leauge.id);
+            listItem.textContent = league.title;
+            listItem.onclick = () => leagueStateHandler(league.id);
             leagueList.appendChild(listItem);
         }
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
-}
-
-function createLeagueStateHandler() {
-    let currentLeagueID = null;
-
-    return async function handleVideoClick(leagueID) {
-        if (currentLeagueID !== leagueID) {
-            currentLeagueID = leagueID;
-
-            // Reset file input values
-            document.getElementById('thumbnail').value = '';
-            document.getElementById('video-file').value = '';
-
-            await getLeague(leagueID);
-        }
-    };
 }
 
 async function getLeague(leagueID) {
