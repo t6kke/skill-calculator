@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (token) {
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('conent-section').style.display = 'block';
-        await getVideos();
+        await getLeagues();
     } else {
         document.getElementById('auth-section').style.display = 'block';
         document.getElementById('conent-section').style.display = 'none';
@@ -74,12 +74,18 @@ async function login() {
     }
 }
 
+function logout() {
+    localStorage.removeItem('token');
+    document.getElementById('auth-section').style.display = 'block';
+    document.getElementById('conent-section').style.display = 'none';
+}
+
 const leagueStateHandler = createLeagueStateHandler();
 
 function createLeagueStateHandler() {
     let currentLeagueID = null;
 
-    return async function handleVideoClick(leagueID) {
+    return async function handleLeagueClick(leagueID) {
         if (currentLeagueID !== leagueID) {
             currentLeagueID = leagueID;
 
@@ -106,6 +112,7 @@ async function createLeague() {
             body: JSON.stringify({ title, description }),
         });
         const data = await res.json();
+        console.log(data)
         if (!res.ok) {
             throw new Error(`Failed to create league: ${data.error}`);
         }
@@ -149,7 +156,7 @@ async function getLeagues() {
 
 async function getLeague(leagueID) {
     try {
-        const res = await fetch(`/api/videos/${leagueID}`, {
+        const res = await fetch(`/api/leagues/${leagueID}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
