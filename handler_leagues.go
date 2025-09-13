@@ -123,5 +123,5 @@ func (api_config *apiConfig) handlerLeaguesDeleteOne(w http.ResponseWriter, r *h
 		return
 	}
 
-
+	//TODO finish the logic
 }

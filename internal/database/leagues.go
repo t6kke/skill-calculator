@@ -61,8 +61,26 @@ func (c Client) CreateLeageWithUserRelation(params CreateLeagueParams) (League, 
 }
 
 func (c Client) DeleteLeageAndUserRelation(user_id, league_id int) error {
-	delete_relation_query = `DELETE FROM users_leagues WHERE user_id = AND league_id =`
-	delete_league_query = `DELETE FROM leagues WHERE id =`
+	delete_relation_query := `
+	DELETE FROM users_leagues
+	WHERE user_id = ?
+	AND league_id = ?
+	`
+	delete_league_query := `
+	DELETE FROM leagues
+	WHERE id = ?
+	`
+
+	_, err := c.db.Exec(delete_relation_query, user_id, league_id)
+	if err != nil {
+		return err
+	}
+	_, err = c.db.Exec(delete_league_query, league_id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c Client) GetLeague(league_id int) (League, error) {
