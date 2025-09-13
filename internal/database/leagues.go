@@ -60,6 +60,11 @@ func (c Client) CreateLeageWithUserRelation(params CreateLeagueParams) (League, 
 	return league, nil
 }
 
+func (c Client) DeleteLeageAndUserRelation(user_id, league_id int) error {
+	delete_relation_query = `DELETE FROM users_leagues WHERE user_id = AND league_id =`
+	delete_league_query = `DELETE FROM leagues WHERE id =`
+}
+
 func (c Client) GetLeague(league_id int) (League, error) {
 	query := `
 	SELECT l.id, l.created_at, l.updated_at, l.title, l.description, l.database_name, ul.user_id

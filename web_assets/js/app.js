@@ -173,19 +173,21 @@ async function getLeague(leagueID) {
     }
 }
 
+let currentLeague = null;
+
 function viewLeague(league) {
-    currentVideo = video;
+    currentLeague = league;
     document.getElementById('league-display').style.display = 'block';
-    document.getElementById('league-title-display').textContent = video.title;
-    document.getElementById('league-description-display').textContent = video.description;
+    document.getElementById('league-title-display').textContent = league.title;
+    document.getElementById('league-description-display').textContent = league.description;
 
     const thumbnailImg = document.getElementById('thumbnail-image');
-    if (!video.thumbnail_url) {
+    if (!league.thumbnail_url) {
         thumbnailImg.style.display = 'none';
     } else {
         thumbnailImg.style.display = 'block';
-        thumbnailImg.src = video.thumbnail_url; //original
-        //thumbnailImg.src = `${video.thumbnail_url}?v=${Date.now()}`; //iniital cache break example
+        thumbnailImg.src = league.thumbnail_url; //original
+        //thumbnailImg.src = `${league.thumbnail_url}?v=${Date.now()}`; //iniital cache break example
     }
 
     const videoPlayer = document.getElementById('video-player');
@@ -197,5 +199,29 @@ function viewLeague(league) {
             videoPlayer.src = video.video_url;
             videoPlayer.load();
         }
+    }
+}
+
+async function deleteLeague() {
+    if (!currentLeague) {
+        alert('No video selected for deletion.');
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/videos/${currentLeague.id}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            throw new Error('Failed to delete video.');
+        }
+        alert('Video deleted successfully.');
+        document.getElementById('video-display').style.display = 'none';
+        await getVideos();
+    } catch (error) {
+        alert(`Error: ${error.message}`);
     }
 }

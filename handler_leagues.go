@@ -92,3 +92,36 @@ func (api_config *apiConfig) handlerLeaguesGetAllForUser(w http.ResponseWriter, 
 
 	respondWithJSON(w, http.StatusOK, leagues)
 }
+
+func (api_config *apiConfig) handlerLeaguesDeleteOne(w http.ResponseWriter, r *http.Request) {
+	token, err := auth.GetBearerToken(r.Header)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't find JWT", err)
+		return
+	}
+	user_id, err := auth.ValidateJWT(token, api_config.jwt_secret)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't validate JWT", err)
+		return
+	}
+
+	league_id_string := r.PathValue("leagueID")
+	league_id, err := strconv.Atoi(league_id_string)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid leauge ID", err)
+		return
+	}
+
+	league, err := api_config.db.GetLeague(league_id)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "Couldn't get leauge", err)
+		return
+	}
+
+	if league.UserID != user_id {
+		respondWithError(w, http.StatusForbidden, "Not allowed to delete this league", err)
+		return
+	}
+
+
+}
