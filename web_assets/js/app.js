@@ -112,7 +112,6 @@ async function createLeague() {
             body: JSON.stringify({ title, description }),
         });
         const data = await res.json();
-        console.log(data)
         if (!res.ok) {
             throw new Error(`Failed to create league: ${data.error}`);
         }
@@ -190,37 +189,28 @@ function viewLeague(league) {
         //thumbnailImg.src = `${league.thumbnail_url}?v=${Date.now()}`; //iniital cache break example
     }
 
-    const videoPlayer = document.getElementById('video-player');
-    if (videoPlayer) {
-        if (!video.video_url) {
-            videoPlayer.style.display = 'none';
-        } else {
-            videoPlayer.style.display = 'block';
-            videoPlayer.src = video.video_url;
-            videoPlayer.load();
-        }
-    }
+
 }
 
 async function deleteLeague() {
     if (!currentLeague) {
-        alert('No video selected for deletion.');
+        alert('No league selected for deletion.');
         return;
     }
 
     try {
-        const res = await fetch(`/api/videos/${currentLeague.id}`, {
+        const res = await fetch(`/api/leagues/${currentLeague.id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
         });
         if (!res.ok) {
-            throw new Error('Failed to delete video.');
+            throw new Error('Failed to delete league.');
         }
-        alert('Video deleted successfully.');
-        document.getElementById('video-display').style.display = 'none';
-        await getVideos();
+        alert('League deleted successfully.');
+        document.getElementById('league-display').style.display = 'none';
+        await getLeagues();
     } catch (error) {
         alert(`Error: ${error.message}`);
     }

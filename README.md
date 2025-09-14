@@ -25,6 +25,9 @@ end goal is to have this as standalone Docker image that you can just use or you
 - Internal database package updated with League creattion, reteival by id and retreival for all based on currentl user
 - API endpoinds created for Leagues, for creation, retreival with specific id, retreival for specific user for all leagues
 - Website app.js fucntion to use new endpoint for creation of the leage
+- Delete league functionality created, server endpoint, handler function, internal database package function, web app.js function.
+- 
+- Web UI elements created for leagus management
 - Main fuctionality of leages managment completed
 - Removed the content.html logic and main page content is on the index.html page, fixed session and token handling issue
 - Fixed issue with login response showing hashed password

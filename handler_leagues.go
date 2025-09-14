@@ -123,5 +123,11 @@ func (api_config *apiConfig) handlerLeaguesDeleteOne(w http.ResponseWriter, r *h
 		return
 	}
 
-	//TODO finish the logic
+	err = api_config.db.DeleteLeageAndUserRelation(user_id, league_id)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to delete the league", err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, "")
 }
