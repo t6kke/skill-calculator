@@ -88,11 +88,6 @@ function createLeagueStateHandler() {
     return async function handleLeagueClick(leagueID) {
         if (currentLeagueID !== leagueID) {
             currentLeagueID = leagueID;
-
-            // Reset file input values
-            document.getElementById('thumbnail').value = '';
-            document.getElementById('video-file').value = '';
-
             await getLeague(leagueID);
         }
     };
@@ -179,17 +174,6 @@ function viewLeague(league) {
     document.getElementById('league-display').style.display = 'block';
     document.getElementById('league-title-display').textContent = league.title;
     document.getElementById('league-description-display').textContent = league.description;
-
-    const thumbnailImg = document.getElementById('thumbnail-image');
-    if (!league.thumbnail_url) {
-        thumbnailImg.style.display = 'none';
-    } else {
-        thumbnailImg.style.display = 'block';
-        thumbnailImg.src = league.thumbnail_url; //original
-        //thumbnailImg.src = `${league.thumbnail_url}?v=${Date.now()}`; //iniital cache break example
-    }
-
-
 }
 
 async function deleteLeague() {
@@ -214,4 +198,37 @@ async function deleteLeague() {
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
+}
+
+async function uploadTournament(leagueID) {
+    const thumbnailFile = document.getElementById('thumbnail').files[0];
+    if (!thumbnailFile) return;
+
+    const formData = new FormData();
+    formData.append('thumbnail', thumbnailFile);
+
+    uploadBtnSelector = 'upload-thumbnail-btn';
+    setUploadButtonState(true, uploadBtnSelector);
+
+    try {
+        const res = await fetch(`/api/thumbnail_upload/${videoID}`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: formData,
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed to upload thumbnail. Error: ${data.error}`);
+        }
+
+        await res.json();
+        console.log('Thumbnail uploaded!');
+        await getVideo(videoID);
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+
+    setUploadButtonState(false, uploadBtnSelector);
 }

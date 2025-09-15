@@ -7,11 +7,11 @@ import (
 )
 
 type League struct {
-	ID            int       `json:"id"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
+	ID        int       `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 	CreateLeagueParams
-	DatabaseName string     `json:"database_name"`
+	DatabaseName string `json:"database_name"`
 }
 
 type CreateLeagueParams struct {
@@ -131,11 +131,11 @@ func (c Client) GetLeagues(user_id int) ([]League, error) {
 		if err := rows.Scan(
 			&league.ID,
 			&league.CreatedAt,
-		        &league.UpdatedAt,
-		        &league.Title,
-		        &league.Description,
-		        &league.DatabaseName,
-		        &league.UserID,
+			&league.UpdatedAt,
+			&league.Title,
+			&league.Description,
+			&league.DatabaseName,
+			&league.UserID,
 		); err != nil {
 			return nil, err
 		}

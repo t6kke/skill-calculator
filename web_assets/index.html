@@ -58,7 +58,9 @@
                     </div>
                     </form>
                 </div>
+            </div>
 
+            <div class="col-lg-12">
                 <div id="conent-section" style="display: none">
                     <h2>Create League</h2>
                     <form id="league-draft-form">
@@ -99,33 +101,62 @@
                             -->
 
                         <!-- this is just an example on how to make forms for handling various functions for users, this is not functioning -->
-                        <div id="league-handling-forms-examples">
-                            <form
-                            id="thumbnail-upload-form"
-                            onsubmit="event.preventDefault(); uploadThumbnail(currentVideo?.id)"
-                            >
-                            <h3>Update Thumbnail</h3>
-                            <input
-                                type="file"
-                                id="thumbnail"
-                                accept="image/*,application/pdf"
-                                required
-                            />
-                            <button type="submit" id="upload-thumbnail-btn">Upload</button>
-                            <img id="thumbnail-image" style="display: block" />
-                            </form>
+                        <div id="league-handling-forms">
 
-                            <div id="video-container">
-                            <form
-                                id="video-file-upload-form"
-                                onsubmit="event.preventDefault(); uploadVideoFile(currentVideo?.id)"
-                            >
-                                <h3>Update Video File</h3>
-                                <input type="file" id="video-file" accept="video/*" required />
-                                <button type="submit" id="upload-video-btn">Upload</button>
-                            </form>
-
+                            <div class="col-lg-12">
+                                <div id="current-standings-container">
+                                <form id="current-standings-form">
+                                    <h3>Current Standings</h3>
+                                    <p>table content</p>
+                                </form>
+                                </div>
                             </div>
+
+                            <div class="col-lg-8">
+                                <div id="uload-tournament-results-container">
+                                <form
+                                    id="excel-upload-form"
+                                    onsubmit="event.preventDefault(); uploadTournament(currentLeague?.id)"
+                                >
+                                <h3>Upload Tournament</h3>
+                                <input
+                                    type="file"
+                                    id="excel"
+                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                    required
+                                />
+                                <button type="submit" id="upload-excel-btn">Upload and Calculate</button>
+                                <p>some kind of selection for sheet(s) and categories here, since it's needed for BSC CLI</p>
+                                </form>
+                                </div>
+
+                                <div id="tournaments-list-container">
+                                <form id="tournaments-list-form">
+                                    <h3>Tournaments in League</h3>
+                                    <p>list of tournanment </p>
+                                </form>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div id="current-standings-container" class="well">
+                                <form id="current-standings-form">
+                                    <h3>Categories in League</h3>
+                                    <p>content about available categories in leage</p>
+                                    <p>category short name - category long name</p>
+                                </form>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div id="other-stuff-container">
+                                <form id="other-stuff-form">
+                                    <h3>Other Stuff</h3>
+                                    <p>other stuff</p>
+                                </form>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

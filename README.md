@@ -21,14 +21,21 @@ end goal is to have this as standalone Docker image that you can just use or you
 
 ## v6
 
-- Unuque database name generator created into internal database pacakge
-- Internal database package updated with League creattion, reteival by id and retreival for all based on currentl user
-- API endpoinds created for Leagues, for creation, retreival with specific id, retreival for specific user for all leagues
-- Website app.js fucntion to use new endpoint for creation of the leage
-- Delete league functionality created, server endpoint, handler function, internal database package function, web app.js function.
-- 
+- Unique database name generator created into internal database pacakge
+- Internal database package updated with league creation functionality that creates entry into leagues table and to the users_leagues relation table
+- Handler function create to enable leagues creation, go server endpoint created to call this function
+- Website app.js function created to use leagues creation endpoint
+- Internal database package updated with retrieval of specific league based on league id
+- Handler function created to use the new database package function and go server endpoint created for it
+- Website app.js function created to use league retrieval endpoint
+- Internal database package updated with all leagues retrieval for specific user
+- Handler function created to use it and go server endpoint created for it
+- Website app.js function created to us the all leagues retrieval
+- Internal database package updated for league deletion and it also removes the user league relation
+- Handler function created to use leage deletion and go server endpoint created to use it
+- Website app.js function created to use leage deletion endpoint
 - Web UI elements created for leagus management
-- Main fuctionality of leages managment completed
+- Main fuctionality prepared of leages managment
 - Removed the content.html logic and main page content is on the index.html page, fixed session and token handling issue
 - Fixed issue with login response showing hashed password
 - Added logout functionality

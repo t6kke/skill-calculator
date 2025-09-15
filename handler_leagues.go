@@ -35,15 +35,15 @@ func (api_config *apiConfig) handlerLeagueCreate(w http.ResponseWriter, r *http.
 		return
 	}
 
-	if new_league_parameters.Title == ""{
+	if new_league_parameters.Title == "" {
 		respondWithError(w, http.StatusBadRequest, "Title for the leauge is required", nil)
 		return
 	}
 
 	league, err := api_config.db.CreateLeageWithUserRelation(database.CreateLeagueParams{
-		Title:    new_league_parameters.Title,
+		Title:       new_league_parameters.Title,
 		Description: new_league_parameters.Description,
-		UserID: user_id,
+		UserID:      user_id,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create league", err)
@@ -52,7 +52,6 @@ func (api_config *apiConfig) handlerLeagueCreate(w http.ResponseWriter, r *http.
 
 	respondWithJSON(w, http.StatusCreated, league)
 }
-
 
 func (api_config *apiConfig) handlerLeagueGet(w http.ResponseWriter, r *http.Request) {
 	league_id_string := r.PathValue("leagueID")
@@ -70,7 +69,6 @@ func (api_config *apiConfig) handlerLeagueGet(w http.ResponseWriter, r *http.Req
 
 	respondWithJSON(w, http.StatusOK, leauge) //original - old before we use temp urls for videos
 }
-
 
 func (api_config *apiConfig) handlerLeaguesGetAllForUser(w http.ResponseWriter, r *http.Request) {
 	token, err := auth.GetBearerToken(r.Header)
