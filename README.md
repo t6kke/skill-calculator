@@ -19,12 +19,33 @@ end goal is to have this as standalone Docker image that you can just use or you
 
 # Change log
 
+## v6
+
+- Unique database name generator created into internal database pacakge
+- Internal database package updated with league creation functionality that creates entry into leagues table and to the users_leagues relation table
+- Handler function create to enable leagues creation, go server endpoint created to call this function
+- Website app.js function created to use leagues creation endpoint
+- Internal database package updated with retrieval of specific league based on league id
+- Handler function created to use the new database package function and go server endpoint created for it
+- Website app.js function created to use league retrieval endpoint
+- Internal database package updated with all leagues retrieval for specific user
+- Handler function created to use it and go server endpoint created for it
+- Website app.js function created to us the all leagues retrieval
+- Internal database package updated for league deletion and it also removes the user league relation
+- Handler function created to use leage deletion and go server endpoint created to use it
+- Website app.js function created to use leage deletion endpoint
+- Web UI elements created for leagus management
+- Main fuctionality prepared of leages managment
+- Removed the content.html logic and main page content is on the index.html page, fixed session and token handling issue
+- Fixed issue with login response showing hashed password
+- Added logout functionality
+
 ## v5
 
 - Fixed app.js "getElementById" errors
 - Added basic forms formatting css logic
 - Added get token function to go auth package and unit tests for it
-- initial prep for leage creation functionality
+- Initial prep for leage creation functionality
 
 ## v4
 

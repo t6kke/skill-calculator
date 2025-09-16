@@ -84,3 +84,28 @@ footer {
         height: 70%;
     }
 }
+
+/* For league list styling */
+#league-list {
+list-style: none;
+padding: 0;
+margin-top: 10px;
+}
+
+#league-list li {
+padding: 10px;
+margin-top: 5px;
+
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+
+#league-list .active {
+background-color: var(--primary-color);
+color: #000;
+}
+
+#league-list li:hover {
+background-color: #D6D6D6;
+}

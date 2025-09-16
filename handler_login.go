@@ -45,6 +45,8 @@ func (api_config *apiConfig) handlerLogin(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	user.Password = "***" //password masking for response, this is not needed to be sent back to the user
+
 	respondWithJSON(w, http.StatusOK, response{
 		User:  user,
 		Token: access_token,

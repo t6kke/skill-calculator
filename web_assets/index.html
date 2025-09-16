@@ -32,8 +32,128 @@
 
                 <!-- Page Content -->
                 <!-- <p class="lead">Hello from Skill Calculator</p> -->
-                <div id="content"></div>
-                <!-- <p>Additional info, table goes here</p> -->
+
+                <div id="logout-button">
+                    <button onclick="logout()">Logout</button>
+                </div>
+
+                <div id="auth-section">
+                    <h2>Login</h2>
+                    <form id="login-form">
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Email"
+                        required
+                    />
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Password"
+                        required
+                    />
+                    <div>
+                        <button type="submit">Login</button>
+                        <button onclick="signup()" type="button">Signup</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div id="conent-section" style="display: none">
+                    <h2>Create League</h2>
+                    <form id="league-draft-form">
+                    <input
+                        class="input-area"
+                        type="text"
+                        id="league-title"
+                        placeholder="League Title"
+                        required
+                    />
+                    <textarea
+                        class="input-area"
+                        id="league-description"
+                        placeholder="League Description"
+                        required
+                    ></textarea>
+                    <div class="button-container">
+                        <button type="submit">Create League</button>
+                    </div>
+                    </form>
+
+                    <div class="col-lg-12">
+                        <h2>All Leagues</h2>
+                        <ul id="league-list"></ul>
+                    </div>
+
+                    <div id="league-display" style="display: none">
+                        <h2>Current League: <span id="league-title-display"></span></h2>
+                        <p id="league-description-display"></p>
+
+                        <div class="button-container mb-4">
+                            <button onclick="deleteLeague()">Delete League</button>
+                        </div>
+
+                        <div id="league-handling-forms">
+
+                            <div class="col-lg-12">
+                                <div id="current-standings-container">
+                                <form id="current-standings-form">
+                                    <h3>Current Standings</h3>
+                                    <p>table content</p>
+                                </form>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8">
+                                <div id="uload-tournament-results-container">
+                                <form
+                                    id="excel-upload-form"
+                                    onsubmit="event.preventDefault(); uploadTournament(currentLeague?.id)"
+                                >
+                                <h3>Upload Tournament</h3>
+                                <input
+                                    type="file"
+                                    id="excel"
+                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                    required
+                                />
+                                <button type="submit" id="upload-excel-btn">Upload and Calculate</button>
+                                <p>some kind of selection for sheet(s) and categories here, since it's needed for BSC CLI</p>
+                                </form>
+                                </div>
+
+                                <div id="tournaments-list-container">
+                                <form id="tournaments-list-form">
+                                    <h3>Tournaments in League</h3>
+                                    <p>list of tournanment </p>
+                                </form>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div id="current-standings-container" class="well">
+                                <form id="current-standings-form">
+                                    <h3>Categories in League</h3>
+                                    <p>content about available categories in leage</p>
+                                    <p>category short name - category long name</p>
+                                </form>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div id="other-stuff-container">
+                                <form id="other-stuff-form">
+                                    <h3>Other Stuff</h3>
+                                    <p>other stuff</p>
+                                </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- /.row -->
@@ -58,7 +178,6 @@
 	$(function(){
 		$("#navigator").load("navigator.html");
 		$("#footer").load("footer.html");
-		$("#content").load("content.html");
 	});
 	</script>
 
