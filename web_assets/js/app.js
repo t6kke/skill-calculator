@@ -1,6 +1,16 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
 
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const isExpired = payload.exp * 1000 < Date.now();
+
+    if (isExpired) {
+        localStorage.removeItem('token'); // clear expired token
+        token = null
+    }
+
+    //TODO also validate that user from token also exists
+
     if (token) {
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('conent-section').style.display = 'block';

@@ -17,7 +17,23 @@ Web solution for serving my [Badminton Skill Calculator](https://github.com/t6kk
 
 end goal is to have this as standalone Docker image that you can just use or you can pull this code build the image yourself
 
+initial docker startup command when image is created,
+```
+docker run -d -e PLATFORM="<environment>" \
+-e PORT="8080" \
+-e WEB_ROOT="/var/www/sc/web_assets" \
+-e DB_FILENAME="<location/sqlite_file_name.db>" \
+-e JWT_SECRET="<local_jwt_secret>" \
+-p 8080:8080 <image_name:tag> 
+```
+
 # Change log
+
+## v7
+
+- 
+- Added Dockerfile for creating local docker image of application, including BSC cli tool
+- website JWT expiry validation before useage
 
 ## v6
 
