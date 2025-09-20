@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/t6kke/skill-calculator/internal/database"
+	"github.com/t6kke/skill-calculator/internal/bsc"
 
 	"github.com/joho/godotenv"
 )
@@ -42,15 +43,28 @@ func main() {
 		log.Fatal("JWT_SECRET environment variable is not set")
 	}
 	//new environment variables between here, db file name should be left to last
-	db_file_name := os.Getenv("DB_FILENAME")
-	if db_file_name == "" {
-		log.Fatal("Database file name must be set")
+	db_dir := os.Getenv("DB_DIR")
+	if db_dir == "" {
+		log.Fatal("Database directory must be set")
 	}
+	_ = os.Mkdir(db_dir, os.ModePerm) //TODO do error handling
 
-	db, err := database.NewClient(db_file_name)
+	db, err := database.NewClient(db_dir+"/sc.db")
 	if err != nil {
 		log.Fatalf("Failed to connect to the database. ERROR: %v", err)
 	}
+
+	//Just initial test of new internal pacakge, in the future variousl league handlers will use bsc package
+	test_bcs_args := bsc.ExecutionArguments{
+		DBName:       db_dir+"/db_excel_test.db",
+		ExcelFile:    "opt/BSC/src/test_xlsx_d",
+		ExcelSheet:   "Sheet1",
+		CategoryName: "TDC",
+		CategoryDesc: "test doubles category",
+	}
+	exit_code, output_str := test_bcs_args.BSCExecution()
+	log.Print(exit_code)
+	log.Print(output_str)
 
 	api_config := apiConfig{
 		platform:   platform,

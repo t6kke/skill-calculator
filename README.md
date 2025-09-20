@@ -22,7 +22,7 @@ initial docker startup command when image is created,
 docker run -d -e PLATFORM="<environment>" \
 -e PORT="8080" \
 -e WEB_ROOT="/var/www/sc/web_assets" \
--e DB_FILENAME="<location/sqlite_file_name.db>" \
+-e DB_DIR="<example_dir>" \
 -e JWT_SECRET="<local_jwt_secret>" \
 -p 8080:8080 <image_name:tag> 
 ```
@@ -31,7 +31,11 @@ docker run -d -e PLATFORM="<environment>" \
 
 ## v7
 
+- New internal go package 'bsc' created to handle interactions with
+- Basic unit tests for bsc pacakge created
+- Initial bsc package function created for executing BSC with custom parameters
 - 
+- Modified how db environment variable works, it now defines directory for databases and webserver has it's own hardcoded db name
 - Added Dockerfile for creating local docker image of application, including BSC cli tool
 - website JWT expiry validation before useage
 

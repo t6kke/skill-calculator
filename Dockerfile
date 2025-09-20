@@ -1,7 +1,9 @@
 #base image from DockerHub, python base image used because of BSC
 FROM python:3.12
 
+# install additional depndent packages for BSC
 RUN pip install pandas
+RUN pip install openpyxl
 
 # install git for pulling BSC
 RUN apt-get update && \
@@ -9,6 +11,9 @@ RUN apt-get update && \
 
 # clone BSC to image
 RUN git clone https://github.com/t6kke/BadmintonSkillCalculator.git /opt/BSC
+
+# remove git
+RUN apt-get remove -y git
 
 # copy over go server
 COPY skill-calculator /bin/skill-calculator
