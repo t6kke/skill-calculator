@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"encoding/base64"
 	"path/filepath"
 	"net/http"
@@ -46,8 +47,10 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 		return
 	}
 
-	const maxMemory = 10 << 20 // 10 MB using bit shifting
+	const maxMemory = 10 << 22 // 40 MB using bit shifting
 	r.ParseMultipartForm(maxMemory)
+
+
 
 	file, header, err := r.FormFile("excel")
 	if err != nil {
@@ -95,7 +98,20 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 		return
 	}
 
-	//TODO here goes the BSC usage logic
+	type parameters struct{
+		Sheets       string `json:"excelSheets"`
+		CategoryName string `json:"categoryName"`
+		CategoryDesc string `json:"categoryDesc"`
+	}
+	payload := r.FormValue("data")
+	params := parameters{}
+	err = json.Unmarshal([]byte(payload), &params)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to decode authorization parameters", err)
+		return
+	}
+	//TODO validate that data has been given and not empty values
+
 	type tempReply struct {
 		BSC_reply string `json:"bsc_reply"`
 	}
@@ -103,14 +119,15 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 	bcs_args := bsc.ExecutionArguments{
 		DBName:       filepath.Join(api_config.db_dir, league.DatabaseName),
 		ExcelFile:    file_path,
-		ExcelSheet:   "Sheet1",
-		CategoryName: "TDC",
-		CategoryDesc: "test doubles category",
+		ExcelSheet:   params.Sheets,
+		CategoryName: params.CategoryName,
+		CategoryDesc: params.CategoryDesc,
 	}
 	exit_code, output_str := bcs_args.BSCExecution()
 	if exit_code != 0 {
 		error_message := fmt.Sprintf("exit code: %d", exit_code)
 		respondWithError(w, http.StatusInternalServerError, "BSC execution failed", errors.New(error_message))
+		return
 	}
 	response := tempReply{
 		BSC_reply: output_str,

@@ -222,11 +222,15 @@ function setUploadButtonState(uploading, selector) {
 }
 
 async function uploadTournament(leagueID) {
+    const excelSheets = document.getElementById('excel-sheets-selection').value;
+    const categoryName = document.getElementById('tournament-category-name').value;
+    const categoryDesc = document.getElementById('tournament-category-desc').value;
     const tournamentFile = document.getElementById('excel').files[0];
     if (!tournamentFile) return;
 
     const formData = new FormData();
     formData.append('excel', tournamentFile);
+    formData.append('data', JSON.stringify({ excelSheets, categoryName, categoryDesc }));
 
     uploadBtnSelector = 'upload-excel-btn';
     setUploadButtonState(true, uploadBtnSelector);
