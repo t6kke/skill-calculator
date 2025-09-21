@@ -3,14 +3,13 @@ package bsc
 import (
 	"os/exec"
 	"syscall"
+	"strings"
 )
 
 type ExecutionArguments struct {
-	python       string
-	pythonApp    string
 	DBName       string
 	ExcelFile    string
-	ExcelSheet   string //TODO should be sheets of multiple strings
+	ExcelSheets  []string
 	CategoryName string
 	CategoryDesc string
 }
@@ -19,10 +18,9 @@ const python = "python"
 const python_app = "/opt/BSC/src/main.py"
 
 func (ea ExecutionArguments) BSCExecution() (int, string) {
-	ea.python = python
-	ea.pythonApp = python_app
-
-	cmd := exec.Command(ea.python, ea.pythonApp, "--db_name="+ea.DBName, "--file="+ea.ExcelFile, "--sheet="+ea.ExcelSheet, "--c_name="+ea.CategoryName, "--c_desc="+ea.CategoryDesc)
+	args := ea.compileArgs()
+	parts := strings.Fields(args)
+	cmd := exec.Command(python, parts...)
 
 	exit_code := 0 //TODO analyze if exit code output is really needed and just doing regular error output on failure is better
 	output, err := cmd.CombinedOutput()
@@ -35,7 +33,16 @@ func (ea ExecutionArguments) BSCExecution() (int, string) {
 			}
 		}
 	}
+
 	return exit_code, string(output)
+}
+
+func (ea ExecutionArguments) compileArgs() string {
+	result_str := python_app + " --db_name=" + ea.DBName + " --file=" + ea.ExcelFile + " --c_name=" + ea.CategoryName + " --c_desc="+ea.CategoryDesc
+	for _, sheet := range ea.ExcelSheets {
+		result_str = result_str + " --sheet=" + sheet
+	}
+	return result_str
 }
 
 func bscPythonTest(command string) (int, string) {

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"io"
+	"strings"
 	"crypto/rand"
 	"errors"
 
@@ -110,16 +111,14 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 		respondWithError(w, http.StatusInternalServerError, "Failed to decode authorization parameters", err)
 		return
 	}
-	//TODO validate that data has been given and not empty values
+	//TODO validate that data has been given and not empty values, not an issue from web since fields are required but if some other tool uses the rest endpoint there is no other checks for empty values
 
-	type tempReply struct {
-		BSC_reply string `json:"bsc_reply"`
-	}
+	sheets_list := sheetsStringToSlice(params.Sheets)
 
 	bcs_args := bsc.ExecutionArguments{
 		DBName:       filepath.Join(api_config.db_dir, league.DatabaseName),
 		ExcelFile:    file_path,
-		ExcelSheet:   params.Sheets,
+		ExcelSheets:  sheets_list,
 		CategoryName: params.CategoryName,
 		CategoryDesc: params.CategoryDesc,
 	}
@@ -129,9 +128,22 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 		respondWithError(w, http.StatusInternalServerError, "BSC execution failed", errors.New(error_message))
 		return
 	}
+
+	type tempReply struct {
+		BSC_reply string `json:"bsc_reply"`
+	}
 	response := tempReply{
 		BSC_reply: output_str,
 	}
 
 	respondWithJSON(w, http.StatusOK, response)
+}
+
+func sheetsStringToSlice(str string) []string {
+	trimmed_str := strings.TrimRight(str, ";")
+	var result []string
+	if strings.Contains(trimmed_str, ";") {
+		result = strings.Split(trimmed_str, ";")
+	}
+	return result
 }

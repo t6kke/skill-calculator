@@ -40,3 +40,5 @@ func Test_runTestExecution(t *testing.T) {
 		})
 	}
 }
+
+//TODO make tests for arguments compliation
