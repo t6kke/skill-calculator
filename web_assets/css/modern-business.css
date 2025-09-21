@@ -109,3 +109,8 @@ color: #000;
 #league-list li:hover {
 background-color: #D6D6D6;
 }
+
+/* TEMP, using BSC text reply \n for new lines */
+#bsc-response {
+white-space: pre-line;
+}

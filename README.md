@@ -34,7 +34,7 @@ docker run -d -e PLATFORM="<environment>" \
 - New internal go package 'bsc' created to handle interactions with
 - Basic unit tests for bsc pacakge created
 - Initial bsc package function created for executing BSC with custom parameters
-- 
+- Excel file upload functionality created; goserver end point, app.js funtion for using it and BSC output response displayed on the website
 - Modified how db environment variable works, it now defines directory for databases and webserver has it's own hardcoded db name
 - Added Dockerfile for creating local docker image of application, including BSC cli tool
 - website JWT expiry validation before useage

@@ -29,7 +29,7 @@ func HashPassword(password string) (string, error) {
 func CheckPasswordHash(hash, password string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	if err != nil {
-		return fmt.Errorf("passowrd not matching %v", err)
+		return fmt.Errorf("password not matching %v", err)
 	}
 	return nil
 }

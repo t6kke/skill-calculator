@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/t6kke/skill-calculator/internal/database"
-	"github.com/t6kke/skill-calculator/internal/bsc"
 
 	"github.com/joho/godotenv"
 )
@@ -17,6 +16,7 @@ type apiConfig struct {
 	port       string
 	web_root   string
 	jwt_secret string
+	db_dir     string
 	db         database.Client
 }
 
@@ -54,23 +54,12 @@ func main() {
 		log.Fatalf("Failed to connect to the database. ERROR: %v", err)
 	}
 
-	//Just initial test of new internal pacakge, in the future variousl league handlers will use bsc package
-	test_bcs_args := bsc.ExecutionArguments{
-		DBName:       db_dir+"/db_excel_test.db",
-		ExcelFile:    "opt/BSC/src/test_xlsx_d",
-		ExcelSheet:   "Sheet1",
-		CategoryName: "TDC",
-		CategoryDesc: "test doubles category",
-	}
-	exit_code, output_str := test_bcs_args.BSCExecution()
-	log.Print(exit_code)
-	log.Print(output_str)
-
 	api_config := apiConfig{
 		platform:   platform,
 		port:       port,
 		web_root:   web_assets_root_folder,
 		jwt_secret: jwt_secret,
+		db_dir:     db_dir,
 		db:         db,
 	}
 
@@ -84,6 +73,7 @@ func main() {
 	server_mux.HandleFunc("GET /api/leagues", api_config.handlerLeaguesGetAllForUser)
 	server_mux.HandleFunc("GET /api/leagues/{leagueID}", api_config.handlerLeagueGet)
 	server_mux.HandleFunc("DELETE /api/leagues/{leagueID}", api_config.handlerLeaguesDeleteOne)
+	server_mux.HandleFunc("POST /api/upload_tournament/{leagueID}", api_config.handlerUploadTournament)
 
 	header_timeout := 30 * time.Second
 	server_struct := &http.Server{

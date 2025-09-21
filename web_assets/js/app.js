@@ -210,18 +210,29 @@ async function deleteLeague() {
     }
 }
 
+function setUploadButtonState(uploading, selector) {
+    const uploadBtn = document.getElementById(selector);
+    if (uploading) {
+        uploadBtn.textContent = 'Uploading...';
+        uploadBtn.disabled = true;
+        return;
+    }
+    uploadBtn.textContent = 'Upload';
+    uploadBtn.disabled = false;
+}
+
 async function uploadTournament(leagueID) {
-    const thumbnailFile = document.getElementById('thumbnail').files[0];
-    if (!thumbnailFile) return;
+    const tournamentFile = document.getElementById('excel').files[0];
+    if (!tournamentFile) return;
 
     const formData = new FormData();
-    formData.append('thumbnail', thumbnailFile);
+    formData.append('excel', tournamentFile);
 
-    uploadBtnSelector = 'upload-thumbnail-btn';
+    uploadBtnSelector = 'upload-excel-btn';
     setUploadButtonState(true, uploadBtnSelector);
 
     try {
-        const res = await fetch(`/api/thumbnail_upload/${videoID}`, {
+        const res = await fetch(`/api/upload_tournament/${leagueID}`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -230,15 +241,25 @@ async function uploadTournament(leagueID) {
         });
         if (!res.ok) {
             const data = await res.json();
-            throw new Error(`Failed to upload thumbnail. Error: ${data.error}`);
+            throw new Error(`Failed to upload excel. Error: ${data.error}`);
         }
 
-        await res.json();
-        console.log('Thumbnail uploaded!');
-        await getVideo(videoID);
+        const bsc_response = await res.json();
+        console.log('Tournament uploaded!');
+        console.log(bsc_response);
+
+        const bsc_output = document.getElementById('bsc-response');
+        bsc_output.innerHTML = '';
+        const contentItem = document.createElement('p');
+        contentItem.textContent = bsc_response.bsc_reply;
+        bsc_output.appendChild(contentItem);
+
+        await getLeague(leagueID);
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
 
     setUploadButtonState(false, uploadBtnSelector);
 }
+
+
