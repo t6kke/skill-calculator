@@ -144,6 +144,8 @@ func sheetsStringToSlice(str string) []string {
 	var result []string
 	if strings.Contains(trimmed_str, ";") {
 		result = strings.Split(trimmed_str, ";")
+	} else {
+		result = append(result, trimmed_str)
 	}
 	return result
 }

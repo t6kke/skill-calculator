@@ -10,7 +10,8 @@ RUN apt-get update && \
     apt-get install -y git
 
 # clone BSC to image
-RUN git clone https://github.com/t6kke/BadmintonSkillCalculator.git /opt/BSC
+#RUN git clone https://github.com/t6kke/BadmintonSkillCalculator.git /opt/BSC
+RUN git clone -b a4_launch_operations https://github.com/t6kke/BadmintonSkillCalculator.git /opt/BSC
 
 # remove git
 RUN apt-get remove -y git

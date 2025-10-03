@@ -38,7 +38,7 @@ func (ea ExecutionArguments) BSCExecution() (int, string) {
 }
 
 func (ea ExecutionArguments) compileArgs() string {
-	result_str := python_app + " --db_name=" + ea.DBName + " --file=" + ea.ExcelFile + " --c_name=" + ea.CategoryName + " --c_desc="+ea.CategoryDesc
+	result_str := python_app + " insert --db_name=" + ea.DBName + " --file=" + ea.ExcelFile + " --c_name=" + ea.CategoryName + " --c_desc=" + ea.CategoryDesc + " --out=json"
 	for _, sheet := range ea.ExcelSheets {
 		result_str = result_str + " --sheet=" + sheet
 	}
