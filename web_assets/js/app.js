@@ -179,6 +179,7 @@ async function getLeague(leagueID) {
 }
 
 async function getLeageStandings(leagueID) {
+    //TODO standings should be hidden if no results exist
     try {
         const res = await fetch(`/api/league_standings/${leagueID}`, {
             method: 'GET',
@@ -190,9 +191,43 @@ async function getLeageStandings(leagueID) {
             throw new Error('Failed to get Leage standings information.');
         }
 
-        const league = await res.json();
+        //TODO cleare the table before before adding data in
+        const results = await res.json();
+        const resultsList = document.getElementById('standings');
+        resultsList.innerHTML = '';
+        for (const category of results.category) {
+            const listItem = document.createElement('p');
+            listItem.textContent = category.name + " - " + category.description;
+            resultsList.appendChild(listItem);
+
+            const resultTable = document.createElement('table');
+            resultTable.setAttribute("class", "table table-bordered table-striped")
+            resultsList.appendChild(resultTable);
+            const th = document.createElement('thead')
+            const tr = document.createElement('tr');
+            const tableHeadName = document.createElement('th');
+            const tableHeadElo = document.createElement('th');
+            tableHeadName.textContent = "Name";
+            tableHeadElo.textContent = "ELO";
+            resultTable.appendChild(th);
+            resultTable.appendChild(tr);
+            resultTable.appendChild(tableHeadName);
+            resultTable.appendChild(tableHeadElo);
+            const tb = document.createElement('tbody');
+            resultTable.appendChild(tb);
+
+            for (const rank of category.ranking) {
+                const tableRow = document.createElement('tr');
+                const tableItemName = document.createElement('td');
+                const tableItemElo = document.createElement('td');
+                tableItemName.textContent = rank.name;
+                tableItemElo.textContent = rank.elo;
+                resultTable.appendChild(tableRow);
+                resultTable.appendChild(tableItemName);
+                resultTable.appendChild(tableItemElo);
+            }
+        }
         //viewLeague(league);
-        //TODO logic here to push content to html
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
@@ -270,14 +305,13 @@ async function uploadTournament(leagueID) {
         }
 
         const bsc_response = await res.json();
-        console.log('Tournament uploaded!');
-        console.log(bsc_response);
-
         const bsc_output = document.getElementById('bsc-response');
         bsc_output.innerHTML = '';
-        const contentItem = document.createElement('p');
-        contentItem.textContent = bsc_response.bsc_reply;
-        bsc_output.appendChild(contentItem);
+        for (const response of bsc_response.tournaments) {
+            const infoItem = document.createElement('p');
+            infoItem.textContent = response.message + " --- " + response.status;
+            bsc_output.appendChild(infoItem);
+        }
 
         await getLeague(leagueID);
         await getLeageStandings(leagueID);

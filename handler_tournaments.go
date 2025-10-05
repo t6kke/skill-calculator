@@ -136,11 +136,20 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 		return
 	}
 
-	type tempReply struct { //TODO actual correct json struct as reply
-		BSC_reply string `json:"bsc_reply"`
+	type replyStruct struct {
+		Name        string `json:"name"`
+		Version     string `json:"version"`
+		Tournaments []struct {
+			Message string `json:"message"`
+			Status  string `json:"status"`
+		} `json:"tournaments"`
 	}
-	response := tempReply{
-		BSC_reply: output_str,
+
+	response := replyStruct{}
+	err = json.Unmarshal([]byte(output_str), &response)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to compile response to json format", err)
+		return
 	}
 
 	respondWithJSON(w, http.StatusOK, response)
