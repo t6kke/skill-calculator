@@ -18,6 +18,13 @@ import (
 	"github.com/t6kke/skill-calculator/internal/bsc"
 )
 
+//TODO functions
+// 1. current standings - in handler_leagues.go
+// 2. Tournaments in leauge
+// 3. Tournament reults
+// 4. Categories in league
+// 5. Add category
+
 func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *http.Request) {
 	token, err := auth.GetBearerToken(r.Header)
 	if err != nil {
@@ -129,7 +136,7 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 		return
 	}
 
-	type tempReply struct {
+	type tempReply struct { //TODO actual correct json struct as reply
 		BSC_reply string `json:"bsc_reply"`
 	}
 	response := tempReply{

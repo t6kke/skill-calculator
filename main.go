@@ -74,6 +74,7 @@ func main() {
 	server_mux.HandleFunc("GET /api/leagues/{leagueID}", api_config.handlerLeagueGet)
 	server_mux.HandleFunc("DELETE /api/leagues/{leagueID}", api_config.handlerLeaguesDeleteOne)
 	server_mux.HandleFunc("POST /api/upload_tournament/{leagueID}", api_config.handlerUploadTournament)
+	server_mux.HandleFunc("GET /api/league_standings/{leagueID}", api_config.handlerGetLeagueStandings)
 
 	header_timeout := 30 * time.Second
 	server_struct := &http.Server{

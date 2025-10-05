@@ -99,6 +99,7 @@ function createLeagueStateHandler() {
         if (currentLeagueID !== leagueID) {
             currentLeagueID = leagueID;
             await getLeague(leagueID);
+            await getLeageStandings(leagueID);
         }
     };
 }
@@ -172,6 +173,26 @@ async function getLeague(leagueID) {
 
         const league = await res.json();
         viewLeague(league);
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+}
+
+async function getLeageStandings(leagueID) {
+    try {
+        const res = await fetch(`/api/league_standings/${leagueID}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            throw new Error('Failed to get Leage standings information.');
+        }
+
+        const league = await res.json();
+        //viewLeague(league);
+        //TODO logic here to push content to html
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
@@ -259,6 +280,7 @@ async function uploadTournament(leagueID) {
         bsc_output.appendChild(contentItem);
 
         await getLeague(leagueID);
+        await getLeageStandings(leagueID);
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
