@@ -164,12 +164,13 @@ func (api_config *apiConfig) handlerGetLeagueStandings(w http.ResponseWriter, r 
 		return
 	}
 
-	bcs_args := bsc.ReportArguments{
+	bcs_args := bsc.ExecutionArguments{
+		Command:             "report",
 		DBName:              filepath.Join(api_config.db_dir, league.DatabaseName),
 		ReportName:          "report_EloStandings",
 		TournamentIDFilter:  "",
 	}
-	exit_code, output_str := bcs_args.BSCReport()
+	exit_code, output_str := bcs_args.BSCExecution()
 	if exit_code != 0 {
 		error_message := fmt.Sprintf("exit code: %d", exit_code)
 		respondWithError(w, http.StatusInternalServerError, "BSC execution failed", errors.New(error_message))

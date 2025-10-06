@@ -123,6 +123,7 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 	sheets_list := sheetsStringToSlice(params.Sheets)
 
 	bcs_args := bsc.ExecutionArguments{
+		Command:      "insert",
 		DBName:       filepath.Join(api_config.db_dir, league.DatabaseName),
 		ExcelFile:    file_path,
 		ExcelSheets:  sheets_list,

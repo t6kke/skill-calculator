@@ -6,25 +6,23 @@ import (
 	"strings"
 )
 
-type ExecutionArguments struct {
-	DBName       string
-	ExcelFile    string
-	ExcelSheets  []string
-	CategoryName string
-	CategoryDesc string
-}
+const python = "python"
+const python_app = "/opt/BSC/src/main.py"
 
-type ReportArguments struct {
+
+type ExecutionArguments struct {
+	Command            string
 	DBName             string
+	ExcelFile          string
+	ExcelSheets        []string
+	CategoryName       string
+	CategoryDesc       string
 	ReportName         string
 	TournamentIDFilter string
 }
 
-const python = "python"
-const python_app = "/opt/BSC/src/main.py"
-
-func (ea ExecutionArguments) BSCExecution() (int, string) {
-	args := ea.compileArgs()
+func (ean ExecutionArguments) BSCExecution() (int, string) {
+	args := ean.compileArgsnew()
 	parts := strings.Fields(args)
 	cmd := exec.Command(python, parts...)
 
@@ -43,39 +41,18 @@ func (ea ExecutionArguments) BSCExecution() (int, string) {
 	return exit_code, string(output)
 }
 
-func (ea ExecutionArguments) compileArgs() string {
-	result_str := python_app + " insert --db_name=" + ea.DBName + " --file=" + ea.ExcelFile + " --c_name=" + ea.CategoryName + " --c_desc=" + ea.CategoryDesc + " --out=json"
-	for _, sheet := range ea.ExcelSheets {
-		result_str = result_str + " --sheet=" + sheet
+func (ean ExecutionArguments) compileArgsnew() string {
+	result_str := python_app + " " + ean.Command + " --db_name=" + ean.DBName + " --r_name=" + ean.ReportName + " --file=" + ean.ExcelFile + " --c_name=" + ean.CategoryName + " --c_desc=" + ean.CategoryDesc + " --out=json"
+
+	if ean.TournamentIDFilter != "" {
+		result_str = result_str + " --r_tidf" + ean.TournamentIDFilter
 	}
-	return result_str
-}
-
-func (ra ReportArguments) BSCReport() (int, string) {
-	args := ra.compileArgs_report()
-	parts := strings.Fields(args)
-	cmd := exec.Command(python, parts...)
-
-	exit_code := 0 //TODO analyze if exit code output is really needed and just doing regular error output on failure is better
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		exit_error, ok := err.(*exec.ExitError)
-		if ok {
-			status, ok := exit_error.Sys().(syscall.WaitStatus)
-			if ok {
-				exit_code = status.ExitStatus()
-			}
+	if len(ean.ExcelSheets) != 0 {
+		for _, sheet := range ean.ExcelSheets {
+			result_str = result_str + " --sheet=" + sheet
 		}
 	}
 
-	return exit_code, string(output)
-}
-
-func (ra ReportArguments) compileArgs_report() string {
-	result_str := python_app + " report --db_name=" + ra.DBName + " --r_name=" + ra.ReportName + " --out=json"
-	if ra.TournamentIDFilter != "" {
-		result_str = result_str + " --r_tidf" + ra.TournamentIDFilter
-	}
 	return result_str
 }
 
