@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         token = null
     }
 
+    //test to see if I can hide the tournament results before requesting them
+    document.getElementById('tournament-result-container').style.display = 'none';
+
     //TODO also validate that user from token also exists
 
     if (token) {
@@ -100,6 +103,7 @@ function createLeagueStateHandler() {
             currentLeagueID = leagueID;
             await getLeague(leagueID);
             await getLeageStandings(leagueID);
+            await getTournaments(leagueID);
         }
     };
 }
@@ -125,7 +129,7 @@ async function createLeague() {
         const leagueID = data.id;
         if (leagueID) {
             await getLeagues();
-            await leagueStateHandler(leagueID); //TODO do I need this?
+            //await leagueStateHandler(leagueID); //TODO do I need this?
         }
     } catch (error) {
         alert(`Error: ${error.message}`);
@@ -292,7 +296,7 @@ async function uploadTournament(leagueID) {
     setUploadButtonState(true, uploadBtnSelector);
 
     try {
-        const res = await fetch(`/api/upload_tournament/${leagueID}`, {
+        const res = await fetch(`/api/tournamnets/${leagueID}`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -315,6 +319,7 @@ async function uploadTournament(leagueID) {
 
         await getLeague(leagueID);
         await getLeageStandings(leagueID);
+        await getTournaments(leagueID);
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
@@ -322,4 +327,106 @@ async function uploadTournament(leagueID) {
     setUploadButtonState(false, uploadBtnSelector);
 }
 
+async function getTournaments(leagueID) {
+    try {
+        const res = await fetch(`/api/tournamnets/${leagueID}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed to get leagues. Error: ${data.error}`);
+        }
 
+        const bsc_response = await res.json();
+        const tournamentsList = document.getElementById('tournamnet-list');
+        tournamentsList.innerHTML = '';
+        for (const tournament of bsc_response.tournaments) {
+            const listItem = document.createElement('li');
+            listItem.textContent = tournament.name + " --- date: " + tournament.date + " --- location: " + tournament.location;
+            listItem.onclick = () => getTournamentResults(leagueID, tournament.id);
+            tournamentsList.appendChild(listItem);
+        }
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+}
+
+async function getTournamentResults(leagueID, tournamentID) {
+    try {
+        const res = await fetch(`/api/tournamnets/${leagueID}/${tournamentID}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed to get leagues. Error: ${data.error}`);
+        }
+
+        const bsc_response = await res.json();
+        const resultsList = document.getElementById('tournament-result-report');
+        resultsList.innerHTML = '';
+        const resultTable = document.createElement('table');
+        resultTable.setAttribute("class", "table table-bordered table-striped")
+        resultsList.appendChild(resultTable);
+        const th = document.createElement('thead');
+        const tr = document.createElement('tr');
+        const tableHeadPosition = document.createElement('th');
+        const tableHeadTeam = document.createElement('th');
+        const tableHeadGamesPlayed = document.createElement('th');
+        const tableHeadGamesWon = document.createElement('th');
+        const tableHeadPointsFor = document.createElement('th');
+        const tableHeadPointsAgainst = document.createElement('th');
+        const tableHeadPointsDiff = document.createElement('th');
+        tableHeadPosition.textContent = "Position";
+        tableHeadTeam.textContent = "Team";
+        tableHeadGamesPlayed.textContent = "Games Played";
+        tableHeadGamesWon.textContent = "Games Won";
+        tableHeadPointsFor.textContent = "Points For";
+        tableHeadPointsAgainst.textContent = "Points Against";
+        tableHeadPointsDiff.textContent = "Points Difference";
+        resultTable.appendChild(th);
+        resultTable.appendChild(tr);
+        resultTable.appendChild(tableHeadPosition);
+        resultTable.appendChild(tableHeadTeam);
+        resultTable.appendChild(tableHeadGamesPlayed);
+        resultTable.appendChild(tableHeadGamesWon);
+        resultTable.appendChild(tableHeadPointsFor);
+        resultTable.appendChild(tableHeadPointsAgainst);
+        resultTable.appendChild(tableHeadPointsDiff);
+        const tb = document.createElement('tbody');
+        resultTable.appendChild(tb);
+        for (const result of bsc_response.results) {
+            const tableRow = document.createElement('tr');
+            const tableItemPosition = document.createElement('td');
+            const tableItemTeam = document.createElement('td');
+            const tableItemGamesPlayed = document.createElement('td');
+            const tableItemGamesWon = document.createElement('td');
+            const tableItemPointsFor = document.createElement('td');
+            const tableItemPointsAgainst = document.createElement('td');
+            const tableItemPointsDiff = document.createElement('td');
+            tableItemPosition.textContent = result.position;
+            tableItemTeam.textContent = result.team;
+            tableItemGamesPlayed.textContent = result.games_total;
+            tableItemGamesWon.textContent = result.games_won;
+            tableItemPointsFor.textContent = result.points_for;
+            tableItemPointsAgainst.textContent = result.points_against;
+            tableItemPointsDiff.textContent = result.points_diff;
+            resultTable.appendChild(tableRow);
+            resultTable.appendChild(tableItemPosition);
+            resultTable.appendChild(tableItemTeam);
+            resultTable.appendChild(tableItemGamesPlayed);
+            resultTable.appendChild(tableItemGamesWon);
+            resultTable.appendChild(tableItemPointsFor);
+            resultTable.appendChild(tableItemPointsAgainst);
+            resultTable.appendChild(tableItemPointsDiff);
+        }
+        document.getElementById('tournament-result-container').style.display = 'block';
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+}

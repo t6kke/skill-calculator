@@ -45,7 +45,7 @@ func (ean ExecutionArguments) compileArgsnew() string {
 	result_str := python_app + " " + ean.Command + " --db_name=" + ean.DBName + " --r_name=" + ean.ReportName + " --file=" + ean.ExcelFile + " --c_name=" + ean.CategoryName + " --c_desc=" + ean.CategoryDesc + " --out=json"
 
 	if ean.TournamentIDFilter != "" {
-		result_str = result_str + " --r_tidf" + ean.TournamentIDFilter
+		result_str = result_str + " --r_tidf=" + ean.TournamentIDFilter
 	}
 	if len(ean.ExcelSheets) != 0 {
 		for _, sheet := range ean.ExcelSheets {

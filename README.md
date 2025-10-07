@@ -36,6 +36,8 @@ docker run -d -e PLATFORM="<environment>" \
 - Initial bsc package function created for executing BSC with custom parameters
 - Excel file upload functionality created; goserver end point, app.js funtion for using it and BSC output response displayed on the website
 - Getting league standings functionality created; goserver end point, app.js function for using it and builds tables on website to display rankings
+- Getting tournaments list functionality created; goserver end point, app.js functionality to use it and disply it as a list
+- Getting tournament result functionality created; goserver end point, app.js functionality to use it and display the results
 - 
 - Modified how db environment variable works, it now defines directory for databases and webserver has it's own hardcoded db name
 - Added Dockerfile for creating local docker image of application, including BSC cli tool
