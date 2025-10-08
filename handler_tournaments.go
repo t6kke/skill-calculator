@@ -233,7 +233,7 @@ func (api_config *apiConfig) handlerGetTournamentResults(w http.ResponseWriter, 
 		return
 	}
 
-	tournament_id_string := r.PathValue("leagueID")
+	tournament_id_string := r.PathValue("tournamentID")
 	/*tournament_id, err := strconv.Atoi(tournament_id_string)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid tournament ID", err)

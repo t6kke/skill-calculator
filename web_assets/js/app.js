@@ -9,9 +9,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         token = null
     }
 
-    //test to see if I can hide the tournament results before requesting them
-    document.getElementById('tournament-result-container').style.display = 'none';
-
     //TODO also validate that user from token also exists
 
     if (token) {
@@ -101,6 +98,8 @@ function createLeagueStateHandler() {
     return async function handleLeagueClick(leagueID) {
         if (currentLeagueID !== leagueID) {
             currentLeagueID = leagueID;
+            document.getElementById('bsc-response').innerHTML = '';
+            document.getElementById('tournament-result-report').innerHTML = '';
             await getLeague(leagueID);
             await getLeageStandings(leagueID);
             await getTournaments(leagueID);
@@ -231,9 +230,9 @@ async function getLeageStandings(leagueID) {
                 resultTable.appendChild(tableItemElo);
             }
         }
-        //viewLeague(league);
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        //alert(`Error: ${error.message}`);
+        console.log(`Error: ${error.message}`)
     }
 }
 
@@ -327,6 +326,8 @@ async function uploadTournament(leagueID) {
     setUploadButtonState(false, uploadBtnSelector);
 }
 
+const tournamentStateHandler = createTournamentStateHandler();
+
 async function getTournaments(leagueID) {
     try {
         const res = await fetch(`/api/tournamnets/${leagueID}`, {
@@ -350,7 +351,8 @@ async function getTournaments(leagueID) {
             tournamentsList.appendChild(listItem);
         }
     } catch (error) {
-        alert(`Error: ${error.message}`);
+        //alert(`Error: ${error.message}`);
+        console.log(`Error: ${error.message}`)
     }
 }
 
