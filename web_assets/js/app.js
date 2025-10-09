@@ -103,6 +103,7 @@ function createLeagueStateHandler() {
             await getLeague(leagueID);
             await getLeageStandings(leagueID);
             await getTournaments(leagueID);
+            await getCategories(leagueID);
         }
     };
 }
@@ -319,6 +320,7 @@ async function uploadTournament(leagueID) {
         await getLeague(leagueID);
         await getLeageStandings(leagueID);
         await getTournaments(leagueID);
+        await getCategories(leagueID);
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
@@ -326,7 +328,66 @@ async function uploadTournament(leagueID) {
     setUploadButtonState(false, uploadBtnSelector);
 }
 
-const tournamentStateHandler = createTournamentStateHandler();
+async function addCategory(leagueID) {
+    const categoryName = document.getElementById('cat-name').value;
+    const categoryDesc = document.getElementById('cat-desc').value;
+
+    const formData = new FormData();
+    formData.append('data', JSON.stringify({ categoryName, categoryDesc }));
+
+    uploadBtnSelector = 'add-category-btn';
+    setUploadButtonState(true, uploadBtnSelector);
+
+    try {
+        const res = await fetch(`/api/categories/${leagueID}`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: formData,
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed add category. Error: ${data.error}`);
+        }
+
+        //const bsc_response = await res.json();
+        //TODO handle response, currently BSC does not give any response
+
+        await getCategories(leagueID);
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+
+    setUploadButtonState(false, uploadBtnSelector);
+}
+
+async function getCategories(leagueID) {
+    try {
+        const res = await fetch(`/api/categories/${leagueID}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed to get leagues. Error: ${data.error}`);
+        }
+
+        const bsc_response = await res.json();
+        const categoriesList = document.getElementById('categories-list');
+        categoriesList.innerHTML = '';
+        for (const category of bsc_response.categories) {
+            const listItem = document.createElement('p');
+            listItem.textContent = category.name + " --- " + category.description;
+            categoriesList.appendChild(listItem);
+        }
+    } catch (error) {
+        //alert(`Error: ${error.message}`);
+        console.log(`Error: ${error.message}`)
+    }
+}
 
 async function getTournaments(leagueID) {
     try {

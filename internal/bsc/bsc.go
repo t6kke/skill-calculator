@@ -19,10 +19,11 @@ type ExecutionArguments struct {
 	CategoryDesc       string
 	ReportName         string
 	TournamentIDFilter string
+	ListContent        bool
 }
 
-func (ean ExecutionArguments) BSCExecution() (int, string) {
-	args := ean.compileArgsnew()
+func (ea ExecutionArguments) BSCExecution() (int, string) {
+	args := ea.compileArgsnew()
 	parts := strings.Fields(args)
 	cmd := exec.Command(python, parts...)
 
@@ -41,17 +42,28 @@ func (ean ExecutionArguments) BSCExecution() (int, string) {
 	return exit_code, string(output)
 }
 
-func (ean ExecutionArguments) compileArgsnew() string {
-	result_str := python_app + " " + ean.Command + " --db_name=" + ean.DBName + " --r_name=" + ean.ReportName + " --file=" + ean.ExcelFile + " --c_name=" + ean.CategoryName + " --c_desc=" + ean.CategoryDesc + " --out=json"
+func (ea ExecutionArguments) compileArgsnew() string {
 
-	if ean.TournamentIDFilter != "" {
-		result_str = result_str + " --r_tidf=" + ean.TournamentIDFilter
-	}
-	if len(ean.ExcelSheets) != 0 {
-		for _, sheet := range ean.ExcelSheets {
-			result_str = result_str + " --sheet=" + sheet
+	//original
+	//result_str := python_app + " " + ea.Command + " --db_name=" + ea.DBName + " --r_name=" + ea.ReportName + " --file=" + ea.ExcelFile + " --c_name=" + ea.CategoryName + " --c_desc=" + ea.CategoryDesc + " --out=json"
+
+	//TODO not a good solution, this if/else is done to avoid creating empty catetgory values
+	result_str := python_app
+	if ea.ListContent {
+		result_str = result_str + " " + ea.Command + " --db_name=" + ea.DBName + " --list --out=json"
+	} else {
+		result_str = result_str + " " + ea.Command + " --db_name=" + ea.DBName + " --r_name=" + ea.ReportName + " --file=" + ea.ExcelFile + " --c_name=" + ea.CategoryName + " --c_desc=" + ea.CategoryDesc + " --out=json"
+
+		if ea.TournamentIDFilter != "" {
+			result_str = result_str + " --r_tidf=" + ea.TournamentIDFilter
+		}
+		if len(ea.ExcelSheets) != 0 {
+			for _, sheet := range ea.ExcelSheets {
+				result_str = result_str + " --sheet=" + sheet
+			}
 		}
 	}
+
 
 	return result_str
 }

@@ -73,6 +73,8 @@ func main() {
 	server_mux.HandleFunc("GET /api/leagues", api_config.handlerLeaguesGetAllForUser)
 	server_mux.HandleFunc("GET /api/leagues/{leagueID}", api_config.handlerLeagueGet)
 	server_mux.HandleFunc("DELETE /api/leagues/{leagueID}", api_config.handlerLeaguesDeleteOne)
+	server_mux.HandleFunc("GET /api/categories/{leagueID}", api_config.handlerGetCategories)
+	server_mux.HandleFunc("POST /api/categories/{leagueID}", api_config.handlerAddCategory)
 	server_mux.HandleFunc("GET /api/tournamnets/{leagueID}", api_config.handlerGetAllTournamentsInLeague)
 	server_mux.HandleFunc("GET /api/tournamnets/{leagueID}/{tournamentID}", api_config.handlerGetTournamentResults)
 	server_mux.HandleFunc("POST /api/tournamnets/{leagueID}", api_config.handlerUploadTournament)

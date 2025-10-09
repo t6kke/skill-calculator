@@ -19,11 +19,11 @@ import (
 )
 
 //TODO functions
-// 1. current standings - in handler_leagues.go
-// 2. Tournaments in leauge - done?
-// 3. Tournament reults
-// 4. Categories in league
-// 5. Add category
+// 1. current standings - in handler_leagues.go - done
+// 2. Tournaments in leauge - done
+// 3. Tournament reults - done
+// 4. Categories in league - in handler_categories.go -
+// 5. Add category - in handler_categories.go -
 
 func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *http.Request) {
 	token, err := auth.GetBearerToken(r.Header)
@@ -115,7 +115,7 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 	params := parameters{}
 	err = json.Unmarshal([]byte(payload), &params)
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Failed to decode authorization parameters", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to decode input parameters", err)
 		return
 	}
 	//TODO validate that data has been given and not empty values, not an issue from web since fields are required but if some other tool uses the rest endpoint there is no other checks for empty values

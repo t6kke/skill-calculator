@@ -38,7 +38,8 @@ docker run -d -e PLATFORM="<environment>" \
 - Getting league standings functionality created; goserver end point, app.js function for using it and builds tables on website to display rankings
 - Getting tournaments list functionality created; goserver end point, app.js functionality to use it and disply it as a list
 - Getting tournament result functionality created; goserver end point, app.js functionality to use it and display the results
-- 
+- Listing categegories functionality created; goserver end point, app.js functionality to use it and list the data
+- Adding categorory functionality created; goserver end point, app.js and html form to use it
 - Modified how db environment variable works, it now defines directory for databases and webserver has it's own hardcoded db name
 - Added Dockerfile for creating local docker image of application, including BSC cli tool
 - website JWT expiry validation before useage
