@@ -49,7 +49,7 @@ func main() {
 	}
 	_ = os.Mkdir(db_dir, os.ModePerm) //TODO do error handling
 
-	db, err := database.NewClient(db_dir+"/sc.db")
+	db, err := database.NewClient(db_dir + "/sc.db")
 	if err != nil {
 		log.Fatalf("Failed to connect to the database. ERROR: %v", err)
 	}

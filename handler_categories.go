@@ -1,12 +1,12 @@
 package main
 
 import (
-	"path/filepath"
 	"encoding/json"
-	"net/http"
-	"strconv"
 	"errors"
 	"fmt"
+	"net/http"
+	"path/filepath"
+	"strconv"
 
 	"github.com/t6kke/skill-calculator/internal/auth"
 	"github.com/t6kke/skill-calculator/internal/bsc"
@@ -43,9 +43,9 @@ func (api_config *apiConfig) handlerGetCategories(w http.ResponseWriter, r *http
 	}
 
 	bcs_args := bsc.ExecutionArguments{
-		Command:             "category",
-		DBName:              filepath.Join(api_config.db_dir, league.DatabaseName),
-		ListContent :        true,
+		Command:     "category",
+		DBName:      filepath.Join(api_config.db_dir, league.DatabaseName),
+		ListContent: true,
 	}
 
 	exit_code, output_str := bcs_args.BSCExecution()
@@ -106,7 +106,7 @@ func (api_config *apiConfig) handlerAddCategory(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	type parameters struct{
+	type parameters struct {
 		CategoryName string `json:"categoryName"`
 		CategoryDesc string `json:"categoryDesc"`
 	}
@@ -120,10 +120,10 @@ func (api_config *apiConfig) handlerAddCategory(w http.ResponseWriter, r *http.R
 	//TODO validate that data has been given and not empty values, not an issue from web since fields are required but if some other tool uses the rest endpoint there is no other checks for empty values
 
 	bcs_args := bsc.ExecutionArguments{
-		Command:             "category",
-		DBName:              filepath.Join(api_config.db_dir, league.DatabaseName),
-		CategoryName:        params.CategoryName,
-		CategoryDesc:        params.CategoryDesc,
+		Command:      "category",
+		DBName:       filepath.Join(api_config.db_dir, league.DatabaseName),
+		CategoryName: params.CategoryName,
+		CategoryDesc: params.CategoryDesc,
 	}
 
 	exit_code, output_str := bcs_args.BSCExecution()

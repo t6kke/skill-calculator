@@ -2,13 +2,12 @@ package bsc
 
 import (
 	"os/exec"
-	"syscall"
 	"strings"
+	"syscall"
 )
 
 const python = "python"
 const python_app = "/opt/BSC/src/main.py"
-
 
 type ExecutionArguments struct {
 	Command            string
@@ -63,7 +62,6 @@ func (ea ExecutionArguments) compileArgsnew() string {
 			}
 		}
 	}
-
 
 	return result_str
 }

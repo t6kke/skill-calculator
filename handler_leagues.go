@@ -2,15 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	"net/http"
-	"strconv"
-	"path/filepath"
-	"fmt"
 	"errors"
+	"fmt"
+	"net/http"
+	"path/filepath"
+	"strconv"
 
 	"github.com/t6kke/skill-calculator/internal/auth"
-	"github.com/t6kke/skill-calculator/internal/database"
 	"github.com/t6kke/skill-calculator/internal/bsc"
+	"github.com/t6kke/skill-calculator/internal/database"
 )
 
 func (api_config *apiConfig) handlerLeagueCreate(w http.ResponseWriter, r *http.Request) {
@@ -165,10 +165,10 @@ func (api_config *apiConfig) handlerGetLeagueStandings(w http.ResponseWriter, r 
 	}
 
 	bcs_args := bsc.ExecutionArguments{
-		Command:             "report",
-		DBName:              filepath.Join(api_config.db_dir, league.DatabaseName),
-		ReportName:          "report_EloStandings",
-		TournamentIDFilter:  "",
+		Command:            "report",
+		DBName:             filepath.Join(api_config.db_dir, league.DatabaseName),
+		ReportName:         "report_EloStandings",
+		TournamentIDFilter: "",
 	}
 	exit_code, output_str := bcs_args.BSCExecution()
 	if exit_code != 0 {

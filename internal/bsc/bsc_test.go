@@ -2,8 +2,8 @@ package bsc
 
 import (
 	"fmt"
-	"testing"
 	"strings"
+	"testing"
 )
 
 func Test_runTestExecution(t *testing.T) {

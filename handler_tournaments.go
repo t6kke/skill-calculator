@@ -1,18 +1,18 @@
 package main
 
 import (
-	"encoding/json"
-	"encoding/base64"
-	"path/filepath"
-	"net/http"
-	"strconv"
-	"mime"
-	"fmt"
-	"os"
-	"io"
-	"strings"
 	"crypto/rand"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
+	"mime"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
 
 	"github.com/t6kke/skill-calculator/internal/auth"
 	"github.com/t6kke/skill-calculator/internal/bsc"
@@ -57,8 +57,6 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 
 	const maxMemory = 10 << 22 // 40 MB using bit shifting
 	r.ParseMultipartForm(maxMemory)
-
-
 
 	file, header, err := r.FormFile("excel")
 	if err != nil {
@@ -106,7 +104,7 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 		return
 	}
 
-	type parameters struct{
+	type parameters struct {
 		Sheets       string `json:"excelSheets"`
 		CategoryName string `json:"categoryName"`
 		CategoryDesc string `json:"categoryDesc"`
@@ -187,10 +185,10 @@ func (api_config *apiConfig) handlerGetAllTournamentsInLeague(w http.ResponseWri
 	}
 
 	bcs_args := bsc.ExecutionArguments{
-		Command:             "report",
-		DBName:              filepath.Join(api_config.db_dir, league.DatabaseName),
-		ReportName:          "report_ListTournaments",
-		TournamentIDFilter:  "",
+		Command:            "report",
+		DBName:             filepath.Join(api_config.db_dir, league.DatabaseName),
+		ReportName:         "report_ListTournaments",
+		TournamentIDFilter: "",
 	}
 
 	exit_code, output_str := bcs_args.BSCExecution()
@@ -259,10 +257,10 @@ func (api_config *apiConfig) handlerGetTournamentResults(w http.ResponseWriter, 
 	}
 
 	bcs_args := bsc.ExecutionArguments{
-		Command:             "report",
-		DBName:              filepath.Join(api_config.db_dir, league.DatabaseName),
-		ReportName:          "report_TournamentResults",
-		TournamentIDFilter:  tournament_id_string,
+		Command:            "report",
+		DBName:             filepath.Join(api_config.db_dir, league.DatabaseName),
+		ReportName:         "report_TournamentResults",
+		TournamentIDFilter: tournament_id_string,
 	}
 
 	exit_code, output_str := bcs_args.BSCExecution()
