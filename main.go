@@ -47,7 +47,7 @@ func main() {
 	if db_dir == "" {
 		log.Fatal("Database directory must be set")
 	}
-	_ = os.Mkdir(db_dir, os.ModePerm) //TODO do error handling
+	_ = os.Mkdir(db_dir, 0754) // #nosec //security exception, I want to provide read access at this point //TODO do error handling
 
 	db, err := database.NewClient(db_dir + "/sc.db")
 	if err != nil {

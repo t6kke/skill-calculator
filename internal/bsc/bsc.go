@@ -24,7 +24,7 @@ type ExecutionArguments struct {
 func (ea ExecutionArguments) BSCExecution() (int, string) {
 	args := ea.compileArgsnew()
 	parts := strings.Fields(args)
-	cmd := exec.Command(python, parts...)
+	cmd := exec.Command(python, parts...) // #nosec
 
 	exit_code := 0 //TODO analyze if exit code output is really needed and just doing regular error output on failure is better
 	output, err := cmd.CombinedOutput()

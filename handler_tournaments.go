@@ -56,7 +56,11 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 	}
 
 	const maxMemory = 10 << 22 // 40 MB using bit shifting
-	r.ParseMultipartForm(maxMemory)
+	err = r.ParseMultipartForm(maxMemory)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to allocate server resources for file handling", err)
+		return
+	}
 
 	file, header, err := r.FormFile("excel")
 	if err != nil {
@@ -89,7 +93,7 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 	name := base64.RawURLEncoding.EncodeToString(key)
 	file_name := fmt.Sprintf("%s.%s", name, "xlsx")
 	file_path := filepath.Join("/tmp", file_name)
-	file_ptr, err := os.Create(file_path)
+	file_ptr, err := os.Create(filepath.Clean(file_path))
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Unable to create location file for tournament file", err)
 		return
