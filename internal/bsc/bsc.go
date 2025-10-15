@@ -42,10 +42,6 @@ func (ea ExecutionArguments) BSCExecution() (int, string) {
 }
 
 func (ea ExecutionArguments) compileArgsnew() string {
-
-	//original
-	//result_str := python_app + " " + ea.Command + " --db_name=" + ea.DBName + " --r_name=" + ea.ReportName + " --file=" + ea.ExcelFile + " --c_name=" + ea.CategoryName + " --c_desc=" + ea.CategoryDesc + " --out=json"
-
 	//TODO not a good solution, this if/else is done to avoid creating empty catetgory values
 	result_str := python_app
 	if ea.ListContent {

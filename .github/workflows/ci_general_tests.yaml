@@ -18,6 +18,23 @@ jobs:
         with:
           go-version: "1.24.1"
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: pip install pandas
+        run: pip install openpyxl
+
+      - name: Clone BSC repository
+        uses: actions/checkout@v4
+        with:
+          repository: t6kke/BadmintonSkillCalculator
+          depth: 1
+          ref: alpha4
+          path: /opt/BSC
+
       - name: go test
         run: go test -cover ./...
 
