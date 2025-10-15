@@ -64,7 +64,7 @@ func (ea ExecutionArguments) compileArgsnew() string {
 
 func bscPythonTest(command string) (int, string) {
 	cmd := exec.Command("python", command)
-	cmd.Dir = "/opt/BSC/src/"
+	cmd.Dir = "/home/runner/work/skill-calculator/skill-calculator/BSC/src"
 	exit_code := 0 //TODO analyze if exit code output is really needed and just doing regular error output on failure is better
 	output, err := cmd.CombinedOutput()
 	if err != nil {

@@ -35,7 +35,7 @@ jobs:
           repository: t6kke/BadmintonSkillCalculator
           depth: 1
           ref: alpha4
-          path: /opt/BSC
+          path: /home/runner/work/skill-calculator/skill-calculator/BSC
 
       - name: go test
         run: go test -cover ./...
