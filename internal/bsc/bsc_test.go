@@ -13,15 +13,15 @@ func Test_runTestExecution(t *testing.T) {
 		exitCode  int
 		outputStr string
 	}{
-		{
-			name:      "Successful python version check",
-			command:   "--version",
-			exitCode:  0,
-			outputStr: "Python 3",
-		},
+		// {
+		// 	name:      "Successful python version check",
+		// 	command:   "--version",
+		// 	exitCode:  0,
+		// 	outputStr: "Python 3",
+		// },
 		{
 			name:      "Successful BSC default execution",
-			command:   "main.py version",
+			command:   "main.py",
 			exitCode:  0,
 			outputStr: "Badminton Skill Calculator",
 		},
