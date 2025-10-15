@@ -16,6 +16,7 @@ type apiConfig struct {
 	port       string
 	web_root   string
 	jwt_secret string
+	db_dir     string
 	db         database.Client
 }
 
@@ -42,12 +43,13 @@ func main() {
 		log.Fatal("JWT_SECRET environment variable is not set")
 	}
 	//new environment variables between here, db file name should be left to last
-	db_file_name := os.Getenv("DB_FILENAME")
-	if db_file_name == "" {
-		log.Fatal("Database file name must be set")
+	db_dir := os.Getenv("DB_DIR")
+	if db_dir == "" {
+		log.Fatal("Database directory must be set")
 	}
+	_ = os.Mkdir(db_dir, 0754) // #nosec //security exception, I want to provide read access at this point //TODO do error handling
 
-	db, err := database.NewClient(db_file_name)
+	db, err := database.NewClient(db_dir + "/sc.db")
 	if err != nil {
 		log.Fatalf("Failed to connect to the database. ERROR: %v", err)
 	}
@@ -57,6 +59,7 @@ func main() {
 		port:       port,
 		web_root:   web_assets_root_folder,
 		jwt_secret: jwt_secret,
+		db_dir:     db_dir,
 		db:         db,
 	}
 
@@ -70,6 +73,12 @@ func main() {
 	server_mux.HandleFunc("GET /api/leagues", api_config.handlerLeaguesGetAllForUser)
 	server_mux.HandleFunc("GET /api/leagues/{leagueID}", api_config.handlerLeagueGet)
 	server_mux.HandleFunc("DELETE /api/leagues/{leagueID}", api_config.handlerLeaguesDeleteOne)
+	server_mux.HandleFunc("GET /api/categories/{leagueID}", api_config.handlerGetCategories)
+	server_mux.HandleFunc("POST /api/categories/{leagueID}", api_config.handlerAddCategory)
+	server_mux.HandleFunc("GET /api/tournamnets/{leagueID}", api_config.handlerGetAllTournamentsInLeague)
+	server_mux.HandleFunc("GET /api/tournamnets/{leagueID}/{tournamentID}", api_config.handlerGetTournamentResults)
+	server_mux.HandleFunc("POST /api/tournamnets/{leagueID}", api_config.handlerUploadTournament)
+	server_mux.HandleFunc("GET /api/league_standings/{leagueID}", api_config.handlerGetLeagueStandings)
 
 	header_timeout := 30 * time.Second
 	server_struct := &http.Server{

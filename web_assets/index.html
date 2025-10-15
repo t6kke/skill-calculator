@@ -99,10 +99,8 @@
 
                             <div class="col-lg-12">
                                 <div id="current-standings-container">
-                                <form id="current-standings-form">
                                     <h3>Current Standings</h3>
-                                    <p>table content</p>
-                                </form>
+                                    <div id="standings"> </div>
                                 </div>
                             </div>
 
@@ -119,37 +117,77 @@
                                     accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                                     required
                                 />
+                                <input
+                                    class="input-area"
+                                    type="text"
+                                    id="excel-sheets-selection"
+                                    placeholder="Sheet1;"
+                                    required
+                                />
+                                <input
+                                    class="input-area"
+                                    type="text"
+                                    id="tournament-category-name"
+                                    placeholder="CNM"
+                                    required
+                                />
+                                <input
+                                    class="input-area"
+                                    type="text"
+                                    id="tournament-category-desc"
+                                    placeholder="category description"
+                                    required
+                                />
                                 <button type="submit" id="upload-excel-btn">Upload and Calculate</button>
-                                <p>some kind of selection for sheet(s) and categories here, since it's needed for BSC CLI</p>
+                                <div id="bsc-response"></div>
                                 </form>
                                 </div>
 
                                 <div id="tournaments-list-container">
-                                <form id="tournaments-list-form">
                                     <h3>Tournaments in League</h3>
-                                    <p>list of tournanment </p>
-                                </form>
+                                    <ul id="tournamnet-list"></ul>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
-                                <div id="current-standings-container" class="well">
-                                <form id="current-standings-form">
+                                <div id="categories-container" class="well">
                                     <h3>Categories in League</h3>
-                                    <p>content about available categories in leage</p>
-                                    <p>category short name - category long name</p>
-                                </form>
+                                    <div id="categories-list"></div>
+
+                                    <form id="categories-form" onsubmit="event.preventDefault(); addCategory(currentLeague?.id)">
+                                    <input
+                                        class="input-area"
+                                        type="text"
+                                        id="cat-name"
+                                        placeholder="CNM"
+                                        required
+                                    />
+                                    <input
+                                        class="input-area"
+                                        type="text"
+                                        id="cat-desc"
+                                        placeholder="category description"
+                                        required
+                                    />
+                                    <button type="submit" id="add-category-btn">Add Category</button>
+                                    </form>
                                 </div>
                             </div>
 
-                            <div class="col-lg-12">
+                            <div id="tournament-result-container" class="col-lg-12">
+                                <h3>Tournament Result</h3>
+                                <div id="tournament-result-report"></div>
+                            </div>
+
+                            <!-- for basic example of new content section -->
+                            <!--<div class="col-lg-12">
                                 <div id="other-stuff-container">
                                 <form id="other-stuff-form">
                                     <h3>Other Stuff</h3>
                                     <p>other stuff</p>
                                 </form>
                                 </div>
-                            </div>
+                            </div>-->
 
                         </div>
                     </div>

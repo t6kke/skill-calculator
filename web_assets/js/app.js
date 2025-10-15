@@ -1,6 +1,16 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
 
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const isExpired = payload.exp * 1000 < Date.now();
+
+    if (isExpired) {
+        localStorage.removeItem('token'); // clear expired token
+        token = null
+    }
+
+    //TODO also validate that user from token also exists
+
     if (token) {
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('conent-section').style.display = 'block';
@@ -88,7 +98,12 @@ function createLeagueStateHandler() {
     return async function handleLeagueClick(leagueID) {
         if (currentLeagueID !== leagueID) {
             currentLeagueID = leagueID;
+            document.getElementById('bsc-response').innerHTML = '';
+            document.getElementById('tournament-result-report').innerHTML = '';
             await getLeague(leagueID);
+            await getLeageStandings(leagueID);
+            await getTournaments(leagueID);
+            await getCategories(leagueID);
         }
     };
 }
@@ -114,7 +129,7 @@ async function createLeague() {
         const leagueID = data.id;
         if (leagueID) {
             await getLeagues();
-            await leagueStateHandler(leagueID); //TODO do I need this?
+            //await leagueStateHandler(leagueID); //TODO do I need this?
         }
     } catch (error) {
         alert(`Error: ${error.message}`);
@@ -167,6 +182,61 @@ async function getLeague(leagueID) {
     }
 }
 
+async function getLeageStandings(leagueID) {
+    //TODO standings should be hidden if no results exist
+    try {
+        const res = await fetch(`/api/league_standings/${leagueID}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            throw new Error('Failed to get Leage standings information.');
+        }
+
+        //TODO cleare the table before before adding data in
+        const results = await res.json();
+        const resultsList = document.getElementById('standings');
+        resultsList.innerHTML = '';
+        for (const category of results.category) {
+            const listItem = document.createElement('p');
+            listItem.textContent = category.name + " - " + category.description;
+            resultsList.appendChild(listItem);
+
+            const resultTable = document.createElement('table');
+            resultTable.setAttribute("class", "table table-bordered table-striped")
+            resultsList.appendChild(resultTable);
+            const th = document.createElement('thead')
+            const tr = document.createElement('tr');
+            const tableHeadName = document.createElement('th');
+            const tableHeadElo = document.createElement('th');
+            tableHeadName.textContent = "Name";
+            tableHeadElo.textContent = "ELO";
+            resultTable.appendChild(th);
+            resultTable.appendChild(tr);
+            resultTable.appendChild(tableHeadName);
+            resultTable.appendChild(tableHeadElo);
+            const tb = document.createElement('tbody');
+            resultTable.appendChild(tb);
+
+            for (const rank of category.ranking) {
+                const tableRow = document.createElement('tr');
+                const tableItemName = document.createElement('td');
+                const tableItemElo = document.createElement('td');
+                tableItemName.textContent = rank.name;
+                tableItemElo.textContent = rank.elo;
+                resultTable.appendChild(tableRow);
+                resultTable.appendChild(tableItemName);
+                resultTable.appendChild(tableItemElo);
+            }
+        }
+    } catch (error) {
+        //alert(`Error: ${error.message}`);
+        console.log(`Error: ${error.message}`)
+    }
+}
+
 let currentLeague = null;
 
 function viewLeague(league) {
@@ -200,18 +270,33 @@ async function deleteLeague() {
     }
 }
 
+function setUploadButtonState(uploading, selector) {
+    const uploadBtn = document.getElementById(selector);
+    if (uploading) {
+        uploadBtn.textContent = 'Uploading...';
+        uploadBtn.disabled = true;
+        return;
+    }
+    uploadBtn.textContent = 'Upload';
+    uploadBtn.disabled = false;
+}
+
 async function uploadTournament(leagueID) {
-    const thumbnailFile = document.getElementById('thumbnail').files[0];
-    if (!thumbnailFile) return;
+    const excelSheets = document.getElementById('excel-sheets-selection').value;
+    const categoryName = document.getElementById('tournament-category-name').value;
+    const categoryDesc = document.getElementById('tournament-category-desc').value;
+    const tournamentFile = document.getElementById('excel').files[0];
+    if (!tournamentFile) return;
 
     const formData = new FormData();
-    formData.append('thumbnail', thumbnailFile);
+    formData.append('excel', tournamentFile);
+    formData.append('data', JSON.stringify({ excelSheets, categoryName, categoryDesc }));
 
-    uploadBtnSelector = 'upload-thumbnail-btn';
+    uploadBtnSelector = 'upload-excel-btn';
     setUploadButtonState(true, uploadBtnSelector);
 
     try {
-        const res = await fetch(`/api/thumbnail_upload/${videoID}`, {
+        const res = await fetch(`/api/tournamnets/${leagueID}`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -220,15 +305,191 @@ async function uploadTournament(leagueID) {
         });
         if (!res.ok) {
             const data = await res.json();
-            throw new Error(`Failed to upload thumbnail. Error: ${data.error}`);
+            throw new Error(`Failed to upload excel. Error: ${data.error}`);
         }
 
-        await res.json();
-        console.log('Thumbnail uploaded!');
-        await getVideo(videoID);
+        const bsc_response = await res.json();
+        const bsc_output = document.getElementById('bsc-response');
+        bsc_output.innerHTML = '';
+        for (const response of bsc_response.tournaments) {
+            const infoItem = document.createElement('p');
+            infoItem.textContent = response.message + " --- " + response.status;
+            bsc_output.appendChild(infoItem);
+        }
+
+        await getLeague(leagueID);
+        await getLeageStandings(leagueID);
+        await getTournaments(leagueID);
+        await getCategories(leagueID);
     } catch (error) {
         alert(`Error: ${error.message}`);
     }
 
     setUploadButtonState(false, uploadBtnSelector);
+}
+
+async function addCategory(leagueID) {
+    const categoryName = document.getElementById('cat-name').value;
+    const categoryDesc = document.getElementById('cat-desc').value;
+
+    const formData = new FormData();
+    formData.append('data', JSON.stringify({ categoryName, categoryDesc }));
+
+    uploadBtnSelector = 'add-category-btn';
+    setUploadButtonState(true, uploadBtnSelector);
+
+    try {
+        const res = await fetch(`/api/categories/${leagueID}`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: formData,
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed add category. Error: ${data.error}`);
+        }
+
+        //const bsc_response = await res.json();
+        //TODO handle response, currently BSC does not give any response
+
+        await getCategories(leagueID);
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+
+    setUploadButtonState(false, uploadBtnSelector);
+}
+
+async function getCategories(leagueID) {
+    try {
+        const res = await fetch(`/api/categories/${leagueID}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed to get leagues. Error: ${data.error}`);
+        }
+
+        const bsc_response = await res.json();
+        const categoriesList = document.getElementById('categories-list');
+        categoriesList.innerHTML = '';
+        for (const category of bsc_response.categories) {
+            const listItem = document.createElement('p');
+            listItem.textContent = category.name + " --- " + category.description;
+            categoriesList.appendChild(listItem);
+        }
+    } catch (error) {
+        //alert(`Error: ${error.message}`);
+        console.log(`Error: ${error.message}`)
+    }
+}
+
+async function getTournaments(leagueID) {
+    try {
+        const res = await fetch(`/api/tournamnets/${leagueID}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed to get leagues. Error: ${data.error}`);
+        }
+
+        const bsc_response = await res.json();
+        const tournamentsList = document.getElementById('tournamnet-list');
+        tournamentsList.innerHTML = '';
+        for (const tournament of bsc_response.tournaments) {
+            const listItem = document.createElement('li');
+            listItem.textContent = tournament.name + " --- date: " + tournament.date + " --- location: " + tournament.location;
+            listItem.onclick = () => getTournamentResults(leagueID, tournament.id);
+            tournamentsList.appendChild(listItem);
+        }
+    } catch (error) {
+        //alert(`Error: ${error.message}`);
+        console.log(`Error: ${error.message}`)
+    }
+}
+
+async function getTournamentResults(leagueID, tournamentID) {
+    try {
+        const res = await fetch(`/api/tournamnets/${leagueID}/${tournamentID}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed to get leagues. Error: ${data.error}`);
+        }
+
+        const bsc_response = await res.json();
+        const resultsList = document.getElementById('tournament-result-report');
+        resultsList.innerHTML = '';
+        const resultTable = document.createElement('table');
+        resultTable.setAttribute("class", "table table-bordered table-striped")
+        resultsList.appendChild(resultTable);
+        const th = document.createElement('thead');
+        const tr = document.createElement('tr');
+        const tableHeadPosition = document.createElement('th');
+        const tableHeadTeam = document.createElement('th');
+        const tableHeadGamesPlayed = document.createElement('th');
+        const tableHeadGamesWon = document.createElement('th');
+        const tableHeadPointsFor = document.createElement('th');
+        const tableHeadPointsAgainst = document.createElement('th');
+        const tableHeadPointsDiff = document.createElement('th');
+        tableHeadPosition.textContent = "Position";
+        tableHeadTeam.textContent = "Team";
+        tableHeadGamesPlayed.textContent = "Games Played";
+        tableHeadGamesWon.textContent = "Games Won";
+        tableHeadPointsFor.textContent = "Points For";
+        tableHeadPointsAgainst.textContent = "Points Against";
+        tableHeadPointsDiff.textContent = "Points Difference";
+        resultTable.appendChild(th);
+        resultTable.appendChild(tr);
+        resultTable.appendChild(tableHeadPosition);
+        resultTable.appendChild(tableHeadTeam);
+        resultTable.appendChild(tableHeadGamesPlayed);
+        resultTable.appendChild(tableHeadGamesWon);
+        resultTable.appendChild(tableHeadPointsFor);
+        resultTable.appendChild(tableHeadPointsAgainst);
+        resultTable.appendChild(tableHeadPointsDiff);
+        const tb = document.createElement('tbody');
+        resultTable.appendChild(tb);
+        for (const result of bsc_response.results) {
+            const tableRow = document.createElement('tr');
+            const tableItemPosition = document.createElement('td');
+            const tableItemTeam = document.createElement('td');
+            const tableItemGamesPlayed = document.createElement('td');
+            const tableItemGamesWon = document.createElement('td');
+            const tableItemPointsFor = document.createElement('td');
+            const tableItemPointsAgainst = document.createElement('td');
+            const tableItemPointsDiff = document.createElement('td');
+            tableItemPosition.textContent = result.position;
+            tableItemTeam.textContent = result.team;
+            tableItemGamesPlayed.textContent = result.games_total;
+            tableItemGamesWon.textContent = result.games_won;
+            tableItemPointsFor.textContent = result.points_for;
+            tableItemPointsAgainst.textContent = result.points_against;
+            tableItemPointsDiff.textContent = result.points_diff;
+            resultTable.appendChild(tableRow);
+            resultTable.appendChild(tableItemPosition);
+            resultTable.appendChild(tableItemTeam);
+            resultTable.appendChild(tableItemGamesPlayed);
+            resultTable.appendChild(tableItemGamesWon);
+            resultTable.appendChild(tableItemPointsFor);
+            resultTable.appendChild(tableItemPointsAgainst);
+            resultTable.appendChild(tableItemPointsDiff);
+        }
+        document.getElementById('tournament-result-container').style.display = 'block';
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
 }

@@ -17,7 +17,32 @@ Web solution for serving my [Badminton Skill Calculator](https://github.com/t6kk
 
 end goal is to have this as standalone Docker image that you can just use or you can pull this code build the image yourself
 
+initial docker startup command when image is created,
+```
+docker run -d -e PLATFORM="<environment>" \
+-e PORT="8080" \
+-e WEB_ROOT="/var/www/sc/web_assets" \
+-e DB_DIR="<example_dir>" \
+-e JWT_SECRET="<local_jwt_secret>" \
+-p 8080:8080 <image_name:tag> 
+```
+
 # Change log
+
+## v7
+
+- New internal go package 'bsc' created to handle interactions with
+- Basic unit tests for bsc pacakge created
+- Initial bsc package function created for executing BSC with custom parameters
+- Excel file upload functionality created; goserver end point, app.js funtion for using it and BSC output response displayed on the website
+- Getting league standings functionality created; goserver end point, app.js function for using it and builds tables on website to display rankings
+- Getting tournaments list functionality created; goserver end point, app.js functionality to use it and disply it as a list
+- Getting tournament result functionality created; goserver end point, app.js functionality to use it and display the results
+- Listing categegories functionality created; goserver end point, app.js functionality to use it and list the data
+- Adding categorory functionality created; goserver end point, app.js and html form to use it
+- Modified how db environment variable works, it now defines directory for databases and webserver has it's own hardcoded db name
+- Added Dockerfile for creating local docker image of application, including BSC cli tool
+- website JWT expiry validation before useage
 
 ## v6
 
