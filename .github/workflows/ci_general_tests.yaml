@@ -33,8 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: t6kke/BadmintonSkillCalculator
-          depth: 1
-          ref: alpha4
+          #ref: alpha4
           path: /home/runner/work/skill-calculator/skill-calculator/BSC
 
       - name: go test
