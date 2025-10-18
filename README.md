@@ -2,7 +2,13 @@
 
 # Skill Calculator
 
-Web solution for serving my [Badminton Skill Calculator](https://github.com/t6kke/BadmintonSkillCalculator) CLI solution.
+Web solution for serving my [Badminton Skill Calculator](https://github.com/t6kke/BadmintonSkillCalculator) CLI application.
+
+## Motivation
+
+I figured that I built quite a cool and useful tool with Badminton Skill Calculator but since CLI tools are not really easy to use for regular users I needed a solution that would allow any kind of person to use it.
+
+While learning web servers with golang through [boot.dev](https://www.boot.dev/) I got inspirered to put what I leared to practice and build a dedicated solution from scratch with golang. 
 
 # Tools Used
 
