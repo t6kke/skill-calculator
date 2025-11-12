@@ -46,7 +46,8 @@ func (c *Client) autoMigrate() error {
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		title TEXT NOT NULL,
 		description TEXT,
-		database_name TEXT NOT NULL
+		database_name TEXT NOT NULL,
+		is_public BOOLEAN NOT NULL DEFAULT false
 	);
 	`
 	_, err = c.db.Exec(leaguesTable)

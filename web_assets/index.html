@@ -150,6 +150,20 @@
                             </div>
 
                             <div class="col-md-4">
+                                <div id="leage-configurations-container" class="well">
+                                    <h3>League Configurations</h3>
+
+                                    <form id="leage-configurations-container" onsubmit="event.preventDefault(); updateLeageProperties(currentLeague?.id)">
+                                        <select name="ispublic-options" id="ispublic">
+                                        <option value="public">Public</option>
+                                        <option value="hidden">Hidden</option>
+                                        </select>
+                                        <button type="submit" id="update-league-btn">Apply</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
                                 <div id="categories-container" class="well">
                                     <h3>Categories in League</h3>
                                     <div id="categories-list"></div>

@@ -29,6 +29,17 @@ docker run -d -e PLATFORM="<environment>" \
 
 # Change log
 
+## v8
+
+- Added functionality to make leage public
+- Leagues table has new column 'is_public'
+- New database function to update league properties, currently only 'is_public' is updatable and it will automatically update the 'updated_at' timestamp
+- Added HTML form for league configurations update, currently has dropdown option for making league public or hidden
+- New leage is hidden by default and dropdown selection reflects the current status
+- New goserver endpoint created to PATCH leage configurations
+- New app.js function created to use the endpoint for update
+- 
+
 ## v7
 
 - New internal go package 'bsc' created to handle interactions with

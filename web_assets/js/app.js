@@ -244,6 +244,9 @@ function viewLeague(league) {
     document.getElementById('league-display').style.display = 'block';
     document.getElementById('league-title-display').textContent = league.title;
     document.getElementById('league-description-display').textContent = league.description;
+    const isPublicField = league.is_public;
+    const selectElement = document.getElementById('ispublic');
+    selectElement.value = isPublicField ? 'public' : 'hidden';
 }
 
 async function deleteLeague() {
@@ -278,6 +281,17 @@ function setUploadButtonState(uploading, selector) {
         return;
     }
     uploadBtn.textContent = 'Upload';
+    uploadBtn.disabled = false;
+}
+
+function setApplyButtonState(uploading, selector) {
+    const uploadBtn = document.getElementById(selector);
+    if (uploading) {
+        uploadBtn.textContent = 'Updating...';
+        uploadBtn.disabled = true;
+        return;
+    }
+    uploadBtn.textContent = 'Apply';
     uploadBtn.disabled = false;
 }
 
@@ -387,6 +401,34 @@ async function getCategories(leagueID) {
         //alert(`Error: ${error.message}`);
         console.log(`Error: ${error.message}`)
     }
+}
+
+async function updateLeageProperties(leagueID) {
+    const is_public = document.getElementById('ispublic').value === 'public';
+
+    const formData = new FormData();
+    formData.append('data', JSON.stringify({ is_public }));
+
+    uploadBtnSelector = 'update-league-btn';
+    setApplyButtonState(true, uploadBtnSelector);
+
+    try {
+        const res = await fetch(`/api/leagues/${leagueID}`, {
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: formData,
+        });
+        if (!res.ok) {
+            throw new Error(`Failed add category. Error: ${data.error}`);
+        }
+
+    } catch (err) {
+        console.error('Error updating properites:', err);
+    }
+
+    setApplyButtonState(false, uploadBtnSelector);
 }
 
 async function getTournaments(leagueID) {
