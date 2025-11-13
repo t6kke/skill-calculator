@@ -26,77 +26,19 @@
 
         <!-- Content Row -->
         <div class="row">
-
-            <!-- Content Column -->
             <div class="col-lg-12">
-
-                <!-- Page Content -->
-                <!-- <p class="lead">Hello from Skill Calculator</p> -->
-
-                <div id="logout-button">
-                    <button onclick="logout()">Logout</button>
-                </div>
-
-                <div id="auth-section">
-                    <h2>Login</h2>
-                    <form id="login-form">
-                    <input
-                        type="email"
-                        id="email"
-                        placeholder="Email"
-                        required
-                    />
-                    <input
-                        type="password"
-                        id="password"
-                        placeholder="Password"
-                        required
-                    />
-                    <div>
-                        <button type="submit">Login</button>
-                        <button onclick="signup()" type="button">Signup</button>
-                    </div>
-                    </form>
-                </div>
-            </div>
-
-            <div class="col-lg-12">
-                <div id="conent-section" style="display: none">
-                    <h2>Create League</h2>
-                    <form id="league-draft-form">
-                    <input
-                        class="input-area"
-                        type="text"
-                        id="league-title"
-                        placeholder="League Title"
-                        required
-                    />
-                    <textarea
-                        class="input-area"
-                        id="league-description"
-                        placeholder="League Description"
-                        required
-                    ></textarea>
-                    <div class="button-container">
-                        <button type="submit">Create League</button>
-                    </div>
-                    </form>
+                <div id="conent-section">
 
                     <div class="col-lg-12">
-                        <h2>All Leagues</h2>
+                        <h2>Public Leagues</h2>
                         <ul id="league-list"></ul>
                     </div>
 
                     <div id="league-display" style="display: none">
-                        <h2>Current League: <span id="league-title-display"></span></h2>
+                        <h2>Selected League: <span id="league-title-display"></span></h2>
                         <p id="league-description-display"></p>
 
-                        <div class="button-container mb-4">
-                            <button onclick="deleteLeague()">Delete League</button>
-                        </div>
-
                         <div id="league-handling-forms">
-
                             <div class="col-lg-12">
                                 <div id="current-standings-container">
                                     <h3>Current Standings</h3>
@@ -104,87 +46,11 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-8">
-                                <div id="uload-tournament-results-container">
-                                <form
-                                    id="excel-upload-form"
-                                    onsubmit="event.preventDefault(); uploadTournament(currentLeague?.id)"
-                                >
-                                <h3>Upload Tournament</h3>
-                                <input
-                                    type="file"
-                                    id="excel"
-                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                                    required
-                                />
-                                <input
-                                    class="input-area"
-                                    type="text"
-                                    id="excel-sheets-selection"
-                                    placeholder="Sheet1;"
-                                    required
-                                />
-                                <input
-                                    class="input-area"
-                                    type="text"
-                                    id="tournament-category-name"
-                                    placeholder="CNM"
-                                    required
-                                />
-                                <input
-                                    class="input-area"
-                                    type="text"
-                                    id="tournament-category-desc"
-                                    placeholder="category description"
-                                    required
-                                />
-                                <button type="submit" id="upload-excel-btn">Upload and Calculate</button>
+                            <div class="col-lg-12">
                                 <div id="bsc-response"></div>
-                                </form>
-                                </div>
-
                                 <div id="tournaments-list-container">
                                     <h3>Tournaments in League</h3>
                                     <ul id="tournamnet-list"></ul>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div id="leage-configurations-container" class="well">
-                                    <h3>League Configurations</h3>
-
-                                    <form id="leage-configurations-container" onsubmit="event.preventDefault(); updateLeageProperties(currentLeague?.id)">
-                                        <select name="ispublic-options" id="ispublic">
-                                        <option value="public">Public</option>
-                                        <option value="hidden">Hidden</option>
-                                        </select>
-                                        <button type="submit" id="update-league-btn">Apply</button>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div id="categories-container" class="well">
-                                    <h3>Categories in League</h3>
-                                    <div id="categories-list"></div>
-
-                                    <form id="categories-form" onsubmit="event.preventDefault(); addCategory(currentLeague?.id)">
-                                    <input
-                                        class="input-area"
-                                        type="text"
-                                        id="cat-name"
-                                        placeholder="CNM"
-                                        required
-                                    />
-                                    <input
-                                        class="input-area"
-                                        type="text"
-                                        id="cat-desc"
-                                        placeholder="category description"
-                                        required
-                                    />
-                                    <button type="submit" id="add-category-btn">Add Category</button>
-                                    </form>
                                 </div>
                             </div>
 
@@ -192,16 +58,6 @@
                                 <h3>Tournament Result</h3>
                                 <div id="tournament-result-report"></div>
                             </div>
-
-                            <!-- for basic example of new content section -->
-                            <!--<div class="col-lg-12">
-                                <div id="other-stuff-container">
-                                <form id="other-stuff-form">
-                                    <h3>Other Stuff</h3>
-                                    <p>other stuff</p>
-                                </form>
-                                </div>
-                            </div>-->
 
                         </div>
                     </div>
@@ -224,7 +80,7 @@
     <script src="./js/jquery.js"></script>
 
     <!-- My json for working with go server functionality -->
-    <script src="./js/app.js" defer></script>
+    <script src="./js/public.js" defer></script>
 
 	<script>
 	$(function(){

@@ -170,3 +170,35 @@ func (c Client) UpdateLeageProperties(is_public bool, league_id int) (League, er
 
 	return league, nil
 }
+
+func (c Client) GetPublicLeagues() ([]League, error) {
+	query := `
+	SELECT id, created_at, updated_at, title, description, is_public
+	FROM leagues
+	WHERE is_public = true
+	`
+	rows, err := c.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	leagues := []League{}
+
+	for rows.Next() {
+		var league League
+		if err := rows.Scan(
+			&league.ID,
+			&league.CreatedAt,
+			&league.UpdatedAt,
+			&league.Title,
+			&league.Description,
+			&league.IsPublic,
+		); err != nil {
+			return nil, err
+		}
+		leagues = append(leagues, league)
+	}
+
+	return leagues, nil
+}

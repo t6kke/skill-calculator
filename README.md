@@ -38,7 +38,12 @@ docker run -d -e PLATFORM="<environment>" \
 - New leage is hidden by default and dropdown selection reflects the current status
 - New goserver endpoint created to PATCH leage configurations
 - New app.js function created to use the endpoint for update
-- 
+- Reworked web_assets, index.html is public landing page that immediately lists all public leagues
+- All leage management functionality moved to manage.html page, header link added to that page.
+- Separete public.js created for public leage and tournament functions
+- Separate GetPublicLeagues DB query created in internal database package
+- New goserver endpoints created for public leagues and tournaments
+- New handlers created for public leagues and tournaments usage
 
 ## v7
 
