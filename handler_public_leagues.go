@@ -1,12 +1,12 @@
 package main
 
 import (
-	"net/http"
-	"strconv"
-	"fmt"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"net/http"
 	"path/filepath"
+	"strconv"
 
 	"github.com/t6kke/skill-calculator/internal/bsc"
 	//"github.com/t6kke/skill-calculator/internal/database"
@@ -34,7 +34,7 @@ func (api_config *apiConfig) handlerGetPublicLeagueSandings(w http.ResponseWrite
 		respondWithError(w, http.StatusNotFound, "Couldn't get leauge", err)
 		return
 	}
-	if league.IsPublic == false {
+	if !league.IsPublic {
 		respondWithError(w, http.StatusForbidden, "Not publicly available league", err)
 		return
 	}

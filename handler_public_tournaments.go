@@ -25,7 +25,7 @@ func (api_config *apiConfig) handlerGetAllTournamentsInPublicLeague(w http.Respo
 		return
 	}
 
-	if league.IsPublic == false {
+	if !league.IsPublic {
 		respondWithError(w, http.StatusForbidden, "Not publicly available league", err)
 		return
 	}
@@ -81,7 +81,7 @@ func (api_config *apiConfig) handlerGetPublicTournamentResults(w http.ResponseWr
 		return
 	}
 
-	if league.IsPublic == false {
+	if !league.IsPublic {
 		respondWithError(w, http.StatusForbidden, "Not publicly available league", err)
 		return
 	}

@@ -12,7 +12,7 @@ type League struct {
 	UpdatedAt time.Time `json:"updated_at"`
 	CreateLeagueParams
 	DatabaseName string `json:"database_name"`
-	IsPublic bool `json:"is_public"`
+	IsPublic     bool   `json:"is_public"`
 }
 
 type CreateLeagueParams struct {
@@ -137,7 +137,7 @@ func (c Client) GetLeagues(user_id int) ([]League, error) {
 			&league.Title,
 			&league.Description,
 			&league.DatabaseName,
-		        &league.IsPublic,
+			&league.IsPublic,
 			&league.UserID,
 		); err != nil {
 			return nil, err
