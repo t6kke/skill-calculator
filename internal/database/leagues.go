@@ -12,6 +12,7 @@ type League struct {
 	UpdatedAt time.Time `json:"updated_at"`
 	CreateLeagueParams
 	DatabaseName string `json:"database_name"`
+	IsPublic     bool   `json:"is_public"`
 }
 
 type CreateLeagueParams struct {
@@ -85,7 +86,7 @@ func (c Client) DeleteLeageAndUserRelation(user_id, league_id int) error {
 
 func (c Client) GetLeague(league_id int) (League, error) {
 	query := `
-	SELECT l.id, l.created_at, l.updated_at, l.title, l.description, l.database_name, ul.user_id
+	SELECT l.id, l.created_at, l.updated_at, l.title, l.description, l.database_name, l.is_public, ul.user_id
 	FROM leagues l
 	JOIN users_leagues ul on ul.league_id = l.id
 	WHERE l.id = ?
@@ -99,6 +100,7 @@ func (c Client) GetLeague(league_id int) (League, error) {
 		&league.Title,
 		&league.Description,
 		&league.DatabaseName,
+		&league.IsPublic,
 		&league.UserID,
 	)
 	if err != nil {
@@ -113,7 +115,7 @@ func (c Client) GetLeague(league_id int) (League, error) {
 
 func (c Client) GetLeagues(user_id int) ([]League, error) {
 	query := `
-	SELECT l.id, l.created_at, l.updated_at, l.title, l.description, l.database_name, ul.user_id
+	SELECT l.id, l.created_at, l.updated_at, l.title, l.description, l.database_name, l.is_public, ul.user_id
 	FROM leagues l
 	JOIN users_leagues ul on ul.league_id = l.id
 	WHERE ul.user_id = ?
@@ -135,7 +137,63 @@ func (c Client) GetLeagues(user_id int) ([]League, error) {
 			&league.Title,
 			&league.Description,
 			&league.DatabaseName,
+			&league.IsPublic,
 			&league.UserID,
+		); err != nil {
+			return nil, err
+		}
+		leagues = append(leagues, league)
+	}
+
+	return leagues, nil
+}
+
+func (c Client) UpdateLeageProperties(is_public bool, league_id int) (League, error) {
+	query := `UPDATE leagues SET is_public = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`
+
+	var league League
+	err := c.db.QueryRow(query, is_public, league_id).Scan(
+		&league.ID,
+		&league.CreatedAt,
+		&league.UpdatedAt,
+		&league.Title,
+		&league.Description,
+		&league.DatabaseName,
+		&league.IsPublic,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return League{}, nil
+		}
+		return League{}, err
+	}
+
+	return league, nil
+}
+
+func (c Client) GetPublicLeagues() ([]League, error) {
+	query := `
+	SELECT id, created_at, updated_at, title, description, is_public
+	FROM leagues
+	WHERE is_public = true
+	`
+	rows, err := c.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	leagues := []League{}
+
+	for rows.Next() {
+		var league League
+		if err := rows.Scan(
+			&league.ID,
+			&league.CreatedAt,
+			&league.UpdatedAt,
+			&league.Title,
+			&league.Description,
+			&league.IsPublic,
 		); err != nil {
 			return nil, err
 		}

@@ -201,3 +201,53 @@ func (api_config *apiConfig) handlerGetLeagueStandings(w http.ResponseWriter, r 
 
 	respondWithJSON(w, http.StatusOK, response)
 }
+
+func (api_config *apiConfig) handlerUpdateLeagueProperties(w http.ResponseWriter, r *http.Request) {
+	token, err := auth.GetBearerToken(r.Header)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't find JWT", err)
+		return
+	}
+	user_id, err := auth.ValidateJWT(token, api_config.jwt_secret)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't validate JWT", err)
+		return
+	}
+
+	league_id_string := r.PathValue("leagueID")
+	league_id, err := strconv.Atoi(league_id_string)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid leauge ID", err)
+		return
+	}
+
+	league, err := api_config.db.GetLeague(league_id)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "Couldn't get leauge", err)
+		return
+	}
+
+	if league.UserID != user_id {
+		respondWithError(w, http.StatusForbidden, "Access rights missing to manage this league", err)
+		return
+	}
+
+	type parameters struct {
+		IsPublic bool `json:"is_public"`
+	}
+	payload := r.FormValue("data")
+	params := parameters{}
+	err = json.Unmarshal([]byte(payload), &params)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to decode input parameters", err)
+		return
+	}
+
+	league, err = api_config.db.UpdateLeageProperties(params.IsPublic, league_id)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to update league public status", err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, "")
+}

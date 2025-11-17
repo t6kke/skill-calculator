@@ -72,6 +72,7 @@ func main() {
 	server_mux.HandleFunc("POST /api/leagues", api_config.handlerLeagueCreate)
 	server_mux.HandleFunc("GET /api/leagues", api_config.handlerLeaguesGetAllForUser)
 	server_mux.HandleFunc("GET /api/leagues/{leagueID}", api_config.handlerLeagueGet)
+	server_mux.HandleFunc("PATCH /api/leagues/{leagueID}", api_config.handlerUpdateLeagueProperties)
 	server_mux.HandleFunc("DELETE /api/leagues/{leagueID}", api_config.handlerLeaguesDeleteOne)
 	server_mux.HandleFunc("GET /api/categories/{leagueID}", api_config.handlerGetCategories)
 	server_mux.HandleFunc("POST /api/categories/{leagueID}", api_config.handlerAddCategory)
@@ -79,6 +80,11 @@ func main() {
 	server_mux.HandleFunc("GET /api/tournamnets/{leagueID}/{tournamentID}", api_config.handlerGetTournamentResults)
 	server_mux.HandleFunc("POST /api/tournamnets/{leagueID}", api_config.handlerUploadTournament)
 	server_mux.HandleFunc("GET /api/league_standings/{leagueID}", api_config.handlerGetLeagueStandings)
+
+	server_mux.HandleFunc("GET /api/public_leagues", api_config.handlerGetAllPublicLeagues)
+	server_mux.HandleFunc("GET /api/public_leagues_standings/{leagueID}", api_config.handlerGetPublicLeagueSandings)
+	server_mux.HandleFunc("GET /api/public_tournamnets/{leagueID}", api_config.handlerGetAllTournamentsInPublicLeague)
+	server_mux.HandleFunc("GET /api/public_tournamnets/{leagueID}/{tournamentID}", api_config.handlerGetPublicTournamentResults)
 
 	header_timeout := 30 * time.Second
 	server_struct := &http.Server{

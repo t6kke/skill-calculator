@@ -18,13 +18,6 @@ import (
 	"github.com/t6kke/skill-calculator/internal/bsc"
 )
 
-//TODO functions
-// 1. current standings - in handler_leagues.go - done
-// 2. Tournaments in leauge - done
-// 3. Tournament reults - done
-// 4. Categories in league - in handler_categories.go -
-// 5. Add category - in handler_categories.go -
-
 func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *http.Request) {
 	token, err := auth.GetBearerToken(r.Header)
 	if err != nil {
