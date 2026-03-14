@@ -276,7 +276,7 @@ async function deleteLeague() {
 function setUploadButtonState(uploading, selector) {
     const uploadBtn = document.getElementById(selector);
     if (uploading) {
-        uploadBtn.textContent = 'Uploading...';
+        uploadBtn.textContent = 'Running...';
         uploadBtn.disabled = true;
         return;
     }
@@ -320,6 +320,48 @@ async function uploadTournament(leagueID) {
         if (!res.ok) {
             const data = await res.json();
             throw new Error(`Failed to upload excel. Error: ${data.error}`);
+        }
+
+        const bsc_response = await res.json();
+        const bsc_output = document.getElementById('bsc-response');
+        bsc_output.innerHTML = '';
+        for (const response of bsc_response.tournaments) {
+            const infoItem = document.createElement('p');
+            infoItem.textContent = response.message + " --- " + response.status;
+            bsc_output.appendChild(infoItem);
+        }
+
+        await getLeague(leagueID);
+        await getLeageStandings(leagueID);
+        await getTournaments(leagueID);
+        await getCategories(leagueID);
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+
+    setUploadButtonState(false, uploadBtnSelector);
+}
+
+async function parseUrlTournament(leagueID) {
+    const tournamentURLs = document.getElementById('ts-url').value;
+
+    const formData = new FormData();
+    formData.append('data', JSON.stringify({ tournamentURLs }));
+
+    uploadBtnSelector = 'parese-url-btn';
+    setUploadButtonState(true, uploadBtnSelector);
+
+    try {
+        const res = await fetch(`/api/tournamnets_url/${leagueID}`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: formData,
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed to inject URL. Error: ${data.error}`);
         }
 
         const bsc_response = await res.json();

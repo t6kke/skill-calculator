@@ -151,6 +151,81 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 	respondWithJSON(w, http.StatusOK, response)
 }
 
+func (api_config *apiConfig) handlerParseUrlTournament(w http.ResponseWriter, r *http.Request) {
+	token, err := auth.GetBearerToken(r.Header)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't find JWT", err)
+		return
+	}
+	user_id, err := auth.ValidateJWT(token, api_config.jwt_secret)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't validate JWT", err)
+		return
+	}
+
+	league_id_string := r.PathValue("leagueID")
+	league_id, err := strconv.Atoi(league_id_string)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid leauge ID", err)
+		return
+	}
+
+	league, err := api_config.db.GetLeague(league_id)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "Couldn't get leauge", err)
+		return
+	}
+
+	if league.UserID != user_id {
+		respondWithError(w, http.StatusForbidden, "Access rights missing to manage this league", err)
+		return
+	}
+
+
+	type parameters struct {
+		URLs       string `json:"tournamentURLs"`
+	}
+	payload := r.FormValue("data")
+	params := parameters{}
+	err = json.Unmarshal([]byte(payload), &params)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to decode input parameters", err)
+		return
+	}
+
+	url_list := urlsStringToSlice(params.URLs)
+
+	bcs_args := bsc.ExecutionArguments{
+		Command:        "insert",
+		DBName:         filepath.Join(api_config.db_dir, league.DatabaseName),
+		TournamentURLs: url_list,
+	}
+	exit_code, output_str := bcs_args.BSCExecution()
+	if exit_code != 0 {
+		error_message := fmt.Sprintf("exit code: %d", exit_code)
+		respondWithError(w, http.StatusInternalServerError, "BSC execution failed", errors.New(error_message))
+		return
+	}
+
+	type replyStruct struct {
+		Name        string `json:"name"`
+		Version     string `json:"version"`
+		Tournaments []struct {
+			Message string `json:"message"`
+			Status  string `json:"status"`
+		} `json:"tournaments"`
+	}
+
+	response := replyStruct{}
+	err = json.Unmarshal([]byte(output_str), &response)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to compile response to json format", err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, response)
+}
+
 func (api_config *apiConfig) handlerGetAllTournamentsInLeague(w http.ResponseWriter, r *http.Request) {
 	token, err := auth.GetBearerToken(r.Header)
 	if err != nil {
@@ -293,6 +368,17 @@ func (api_config *apiConfig) handlerGetTournamentResults(w http.ResponseWriter, 
 }
 
 func sheetsStringToSlice(str string) []string {
+	trimmed_str := strings.TrimRight(str, ";")
+	var result []string
+	if strings.Contains(trimmed_str, ";") {
+		result = strings.Split(trimmed_str, ";")
+	} else {
+		result = append(result, trimmed_str)
+	}
+	return result
+}
+
+func urlsStringToSlice(str string) []string {
 	trimmed_str := strings.TrimRight(str, ";")
 	var result []string
 	if strings.Contains(trimmed_str, ";") {
