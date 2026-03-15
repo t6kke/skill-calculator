@@ -33,7 +33,7 @@ func (api_config *apiConfig) handlerGetAllTournamentsInPublicLeague(w http.Respo
 	bcs_args := bsc.ExecutionArguments{
 		Command:            "report",
 		DBName:             filepath.Join(api_config.db_dir, league.DatabaseName),
-		ReportName:         "report_ListTournaments",
+		ReportName:         "report_ListAllTournaments",
 		TournamentIDFilter: "",
 	}
 
