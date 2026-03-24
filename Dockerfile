@@ -25,7 +25,7 @@ RUN apt-get update && \
 
 # clone BSC to image
 #RUN git clone https://github.com/t6kke/BadmintonSkillCalculator.git /opt/BSC
-RUN git clone --depth 1 --branch a5_ts_scraping https://github.com/t6kke/BadmintonSkillCalculator.git /opt/BSC
+RUN git clone --depth 1 --branch alpha5 https://github.com/t6kke/BadmintonSkillCalculator.git /opt/BSC
 
 # remove git
 RUN apt-get remove -y git

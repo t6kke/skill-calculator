@@ -181,9 +181,8 @@ func (api_config *apiConfig) handlerParseUrlTournament(w http.ResponseWriter, r 
 		return
 	}
 
-
 	type parameters struct {
-		URLs       string `json:"tournamentURLs"`
+		URLs string `json:"tournamentURLs"`
 	}
 	payload := r.FormValue("data")
 	params := parameters{}

@@ -78,7 +78,7 @@ func main() {
 	server_mux.HandleFunc("POST /api/categories/{leagueID}", api_config.handlerAddCategory)
 	server_mux.HandleFunc("GET /api/tournamnets/{leagueID}", api_config.handlerGetAllTournamentsInLeague)
 	server_mux.HandleFunc("GET /api/tournamnets/{leagueID}/{tournamentID}", api_config.handlerGetTournamentResults)
-	server_mux.HandleFunc("POST /api/tournamnets/{leagueID}", api_config.handlerUploadTournament) //TODO check the next TODO
+	server_mux.HandleFunc("POST /api/tournamnets/{leagueID}", api_config.handlerUploadTournament)       //TODO check the next TODO
 	server_mux.HandleFunc("POST /api/tournamnets_url/{leagueID}", api_config.handlerParseUrlTournament) //TODO analyze better endpoint on how to handled POST commands with different type of content being uploaded
 	server_mux.HandleFunc("GET /api/league_standings/{leagueID}", api_config.handlerGetLeagueStandings)
 
