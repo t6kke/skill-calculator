@@ -35,6 +35,15 @@ docker run -d -e PLATFORM="<environment>" \
 
 # Change log
 
+## v9
+
+- Swithing BSC verion to use alpha5 version that includes Tournamentsoftware.com scraping
+- New goserver api endpoint to use BSC url parsing functionality
+- New app.js function to use the new server endpoint
+- Added secondary form for URL injection on management page
+- Fixed tournament results and ELO standing tables formatting with new table generation method in js
+- Dockerfile for image build updated with additional components for BSC webscraping dependencies
+
 ## v8
 
 - Added functionality to make leage public

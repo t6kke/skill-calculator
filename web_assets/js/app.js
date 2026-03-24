@@ -204,31 +204,23 @@ async function getLeageStandings(leagueID) {
             listItem.textContent = category.name + " - " + category.description;
             resultsList.appendChild(listItem);
 
-            const resultTable = document.createElement('table');
+            var resultTable = document.createElement('table');
             resultTable.setAttribute("class", "table table-bordered table-striped")
             resultsList.appendChild(resultTable);
-            const th = document.createElement('thead')
-            const tr = document.createElement('tr');
-            const tableHeadName = document.createElement('th');
-            const tableHeadElo = document.createElement('th');
-            tableHeadName.textContent = "Name";
-            tableHeadElo.textContent = "ELO";
-            resultTable.appendChild(th);
-            resultTable.appendChild(tr);
-            resultTable.appendChild(tableHeadName);
-            resultTable.appendChild(tableHeadElo);
-            const tb = document.createElement('tbody');
-            resultTable.appendChild(tb);
-
+            header = resultTable.createTHead();
+            row = resultTable.insertRow(0);
+            th1 = document.createElement("th");
+            th2 = document.createElement("th");
+            th1.textContent = "Name";
+            th2.textContent = "ELO";
+            row.appendChild(th1);
+            row.appendChild(th2);
             for (const rank of category.ranking) {
-                const tableRow = document.createElement('tr');
-                const tableItemName = document.createElement('td');
-                const tableItemElo = document.createElement('td');
-                tableItemName.textContent = rank.name;
-                tableItemElo.textContent = rank.elo;
-                resultTable.appendChild(tableRow);
-                resultTable.appendChild(tableItemName);
-                resultTable.appendChild(tableItemElo);
+                row = resultTable.insertRow();
+                cellA = row.insertCell();
+                cellB = row.insertCell();
+                cellA.innerHTML = rank.name;
+                cellB.innerHTML = rank.elo;
             }
         }
     } catch (error) {
@@ -276,7 +268,7 @@ async function deleteLeague() {
 function setUploadButtonState(uploading, selector) {
     const uploadBtn = document.getElementById(selector);
     if (uploading) {
-        uploadBtn.textContent = 'Uploading...';
+        uploadBtn.textContent = 'Running...';
         uploadBtn.disabled = true;
         return;
     }
@@ -320,6 +312,48 @@ async function uploadTournament(leagueID) {
         if (!res.ok) {
             const data = await res.json();
             throw new Error(`Failed to upload excel. Error: ${data.error}`);
+        }
+
+        const bsc_response = await res.json();
+        const bsc_output = document.getElementById('bsc-response');
+        bsc_output.innerHTML = '';
+        for (const response of bsc_response.tournaments) {
+            const infoItem = document.createElement('p');
+            infoItem.textContent = response.message + " --- " + response.status;
+            bsc_output.appendChild(infoItem);
+        }
+
+        await getLeague(leagueID);
+        await getLeageStandings(leagueID);
+        await getTournaments(leagueID);
+        await getCategories(leagueID);
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+
+    setUploadButtonState(false, uploadBtnSelector);
+}
+
+async function parseUrlTournament(leagueID) {
+    const tournamentURLs = document.getElementById('ts-url').value;
+
+    const formData = new FormData();
+    formData.append('data', JSON.stringify({ tournamentURLs }));
+
+    uploadBtnSelector = 'parese-url-btn';
+    setUploadButtonState(true, uploadBtnSelector);
+
+    try {
+        const res = await fetch(`/api/tournamnets_url/${leagueID}`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: formData,
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(`Failed to inject URL. Error: ${data.error}`);
         }
 
         const bsc_response = await res.json();
@@ -475,60 +509,49 @@ async function getTournamentResults(leagueID, tournamentID) {
         const bsc_response = await res.json();
         const resultsList = document.getElementById('tournament-result-report');
         resultsList.innerHTML = '';
-        const resultTable = document.createElement('table');
+
+        var resultTable = document.createElement('table');
         resultTable.setAttribute("class", "table table-bordered table-striped")
         resultsList.appendChild(resultTable);
-        const th = document.createElement('thead');
-        const tr = document.createElement('tr');
-        const tableHeadPosition = document.createElement('th');
-        const tableHeadTeam = document.createElement('th');
-        const tableHeadGamesPlayed = document.createElement('th');
-        const tableHeadGamesWon = document.createElement('th');
-        const tableHeadPointsFor = document.createElement('th');
-        const tableHeadPointsAgainst = document.createElement('th');
-        const tableHeadPointsDiff = document.createElement('th');
-        tableHeadPosition.textContent = "Position";
-        tableHeadTeam.textContent = "Team";
-        tableHeadGamesPlayed.textContent = "Games Played";
-        tableHeadGamesWon.textContent = "Games Won";
-        tableHeadPointsFor.textContent = "Points For";
-        tableHeadPointsAgainst.textContent = "Points Against";
-        tableHeadPointsDiff.textContent = "Points Difference";
-        resultTable.appendChild(th);
-        resultTable.appendChild(tr);
-        resultTable.appendChild(tableHeadPosition);
-        resultTable.appendChild(tableHeadTeam);
-        resultTable.appendChild(tableHeadGamesPlayed);
-        resultTable.appendChild(tableHeadGamesWon);
-        resultTable.appendChild(tableHeadPointsFor);
-        resultTable.appendChild(tableHeadPointsAgainst);
-        resultTable.appendChild(tableHeadPointsDiff);
-        const tb = document.createElement('tbody');
-        resultTable.appendChild(tb);
+        header = resultTable.createTHead();
+        row = resultTable.insertRow(0);
+        th1 = document.createElement("th");
+        th2 = document.createElement("th");
+        th3 = document.createElement("th");
+        th4 = document.createElement("th");
+        th5 = document.createElement("th");
+        th6 = document.createElement("th");
+        th7 = document.createElement("th");
+        th1.textContent = "Position";
+        th2.textContent = "Team";
+        th3.textContent = "Games Played";
+        th4.textContent = "Games Won";
+        th5.textContent = "Points For";
+        th6.textContent = "Points Against";
+        th7.textContent = "Points Difference";
+        row.appendChild(th1);
+        row.appendChild(th2);
+        row.appendChild(th3);
+        row.appendChild(th4);
+        row.appendChild(th5);
+        row.appendChild(th6);
+        row.appendChild(th7);
         for (const result of bsc_response.results) {
-            const tableRow = document.createElement('tr');
-            const tableItemPosition = document.createElement('td');
-            const tableItemTeam = document.createElement('td');
-            const tableItemGamesPlayed = document.createElement('td');
-            const tableItemGamesWon = document.createElement('td');
-            const tableItemPointsFor = document.createElement('td');
-            const tableItemPointsAgainst = document.createElement('td');
-            const tableItemPointsDiff = document.createElement('td');
-            tableItemPosition.textContent = result.position;
-            tableItemTeam.textContent = result.team;
-            tableItemGamesPlayed.textContent = result.games_total;
-            tableItemGamesWon.textContent = result.games_won;
-            tableItemPointsFor.textContent = result.points_for;
-            tableItemPointsAgainst.textContent = result.points_against;
-            tableItemPointsDiff.textContent = result.points_diff;
-            resultTable.appendChild(tableRow);
-            resultTable.appendChild(tableItemPosition);
-            resultTable.appendChild(tableItemTeam);
-            resultTable.appendChild(tableItemGamesPlayed);
-            resultTable.appendChild(tableItemGamesWon);
-            resultTable.appendChild(tableItemPointsFor);
-            resultTable.appendChild(tableItemPointsAgainst);
-            resultTable.appendChild(tableItemPointsDiff);
+            row = resultTable.insertRow();
+            cellA = row.insertCell();
+            cellB = row.insertCell();
+            cellC = row.insertCell();
+            cellD = row.insertCell();
+            cellE = row.insertCell();
+            cellF = row.insertCell();
+            cellG = row.insertCell();
+            cellA.innerHTML = result.position;
+            cellB.innerHTML = result.team;
+            cellC.innerHTML = result.games_total;
+            cellD.innerHTML = result.games_won;
+            cellE.innerHTML = result.points_for;
+            cellF.innerHTML = result.points_against;
+            cellG.innerHTML = result.points_diff;
         }
         document.getElementById('tournament-result-container').style.display = 'block';
     } catch (error) {

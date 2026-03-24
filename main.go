@@ -47,7 +47,7 @@ func main() {
 	if db_dir == "" {
 		log.Fatal("Database directory must be set")
 	}
-	_ = os.Mkdir(db_dir, 0754) // #nosec //security exception, I want to provide read access at this point //TODO do error handling
+	_ = os.Mkdir(db_dir, 0754) //gosec:disable //security exception, I want to provide read access at this point //TODO do error handling
 
 	db, err := database.NewClient(db_dir + "/sc.db")
 	if err != nil {
@@ -78,7 +78,8 @@ func main() {
 	server_mux.HandleFunc("POST /api/categories/{leagueID}", api_config.handlerAddCategory)
 	server_mux.HandleFunc("GET /api/tournamnets/{leagueID}", api_config.handlerGetAllTournamentsInLeague)
 	server_mux.HandleFunc("GET /api/tournamnets/{leagueID}/{tournamentID}", api_config.handlerGetTournamentResults)
-	server_mux.HandleFunc("POST /api/tournamnets/{leagueID}", api_config.handlerUploadTournament)
+	server_mux.HandleFunc("POST /api/tournamnets/{leagueID}", api_config.handlerUploadTournament)       //TODO check the next TODO
+	server_mux.HandleFunc("POST /api/tournamnets_url/{leagueID}", api_config.handlerParseUrlTournament) //TODO analyze better endpoint on how to handled POST commands with different type of content being uploaded
 	server_mux.HandleFunc("GET /api/league_standings/{leagueID}", api_config.handlerGetLeagueStandings)
 
 	server_mux.HandleFunc("GET /api/public_leagues", api_config.handlerGetAllPublicLeagues)
@@ -93,7 +94,7 @@ func main() {
 		ReadHeaderTimeout: header_timeout,
 	}
 
-	log.Printf("Platform: %s", api_config.platform)
-	log.Printf("Serving files from %s on port: %s\n", api_config.web_root, port)
+	log.Printf("Platform: %s", api_config.platform)                              //gosec:disable
+	log.Printf("Serving files from %s on port: %s\n", api_config.web_root, port) //gosec:disable
 	log.Fatal(server_struct.ListenAndServe())
 }

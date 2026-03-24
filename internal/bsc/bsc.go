@@ -12,6 +12,7 @@ const python_app = "/opt/BSC/src/main.py"
 type ExecutionArguments struct {
 	Command            string
 	DBName             string
+	TournamentURLs     []string
 	ExcelFile          string
 	ExcelSheets        []string
 	CategoryName       string
@@ -22,9 +23,9 @@ type ExecutionArguments struct {
 }
 
 func (ea ExecutionArguments) BSCExecution() (int, string) {
-	args := ea.compileArgsnew()
+	args := ea.compileArgs()
 	parts := strings.Fields(args)
-	cmd := exec.Command(python, parts...) // #nosec
+	cmd := exec.Command(python, parts...) //gosec:disable
 
 	exit_code := 0 //TODO analyze if exit code output is really needed and just doing regular error output on failure is better
 	output, err := cmd.CombinedOutput()
@@ -41,7 +42,7 @@ func (ea ExecutionArguments) BSCExecution() (int, string) {
 	return exit_code, string(output)
 }
 
-func (ea ExecutionArguments) compileArgsnew() string {
+func (ea ExecutionArguments) compileArgs() string {
 	//TODO not a good solution, this if/else is done to avoid creating empty catetgory values
 	result_str := python_app
 	if ea.ListContent {
@@ -57,13 +58,17 @@ func (ea ExecutionArguments) compileArgsnew() string {
 				result_str = result_str + " --sheet=" + sheet
 			}
 		}
+		if len(ea.TournamentURLs) != 0 {
+			for _, url := range ea.TournamentURLs {
+				result_str = result_str + " --url=" + url
+			}
+		}
 	}
-
 	return result_str
 }
 
 func bscPythonTest(command_args []string) (int, string) {
-	cmd := exec.Command("python", command_args...)
+	cmd := exec.Command("python", command_args...) //gosec:disable
 	cmd.Dir = "/home/runner/work/skill-calculator/skill-calculator/BSC/src"
 	exit_code := 0 //TODO analyze if exit code output is really needed and just doing regular error output on failure is better
 	output, err := cmd.CombinedOutput()

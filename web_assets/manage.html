@@ -110,7 +110,7 @@
                                     id="excel-upload-form"
                                     onsubmit="event.preventDefault(); uploadTournament(currentLeague?.id)"
                                 >
-                                <h3>Upload Tournament</h3>
+                                <h3>Injest Tournament</h3>
                                 <input
                                     type="file"
                                     id="excel"
@@ -139,6 +139,20 @@
                                     required
                                 />
                                 <button type="submit" id="upload-excel-btn">Upload and Calculate</button>
+                                </form>
+                                <form
+                                    id="parse-url-form"
+                                    onsubmit="event.preventDefault(); parseUrlTournament(currentLeague?.id)"
+                                >
+                                <h4>Or</h4>
+                                <input
+                                    class="input-area"
+                                    type="text"
+                                    id="ts-url"
+                                    placeholder="https://www.tournamentsoftware.com/tournament/ts_id;"
+                                    required
+                                />
+                                <button type="submit" id="parese-url-btn">Parse URL</button>
                                 </form>
                                 <div id="bsc-response"></div>
                                 </div>
