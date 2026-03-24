@@ -94,7 +94,7 @@ func main() {
 		ReadHeaderTimeout: header_timeout,
 	}
 
-	log.Printf("Platform: %s", api_config.platform) //gosec:disable
+	log.Printf("Platform: %s", api_config.platform)                              //gosec:disable
 	log.Printf("Serving files from %s on port: %s\n", api_config.web_root, port) //gosec:disable
 	log.Fatal(server_struct.ListenAndServe())
 }
