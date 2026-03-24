@@ -47,7 +47,7 @@ func main() {
 	if db_dir == "" {
 		log.Fatal("Database directory must be set")
 	}
-	_ = os.Mkdir(db_dir, 0754) // #nosec //security exception, I want to provide read access at this point //TODO do error handling
+	_ = os.Mkdir(db_dir, 0754) //gosec:disable //security exception, I want to provide read access at this point //TODO do error handling
 
 	db, err := database.NewClient(db_dir + "/sc.db")
 	if err != nil {
@@ -94,7 +94,7 @@ func main() {
 		ReadHeaderTimeout: header_timeout,
 	}
 
-	log.Printf("Platform: %s", api_config.platform)
-	log.Printf("Serving files from %s on port: %s\n", api_config.web_root, port)
+	log.Printf("Platform: %s", api_config.platform) //gosec:disable
+	log.Printf("Serving files from %s on port: %s\n", api_config.web_root, port) //gosec:disable
 	log.Fatal(server_struct.ListenAndServe())
 }

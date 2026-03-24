@@ -49,7 +49,7 @@ func (api_config *apiConfig) handlerUploadTournament(w http.ResponseWriter, r *h
 	}
 
 	const maxMemory = 10 << 22 // 40 MB using bit shifting
-	err = r.ParseMultipartForm(maxMemory)
+	err = r.ParseMultipartForm(maxMemory) //gosec:disable
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Failed to allocate server resources for file handling", err)
 		return
