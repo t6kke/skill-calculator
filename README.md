@@ -35,6 +35,11 @@ docker run -d -e PLATFORM="<environment>" \
 
 # Change log
 
+## v9.1
+
+- Fixed the BSC report used for listing tournaments in league
+- Added logging details of BCS execution
+
 ## v9
 
 - Swithing BSC verion to use alpha5 version that includes Tournamentsoftware.com scraping
