@@ -9,7 +9,6 @@ import (
 	"strconv"
 
 	"github.com/t6kke/skill-calculator/internal/bsc"
-	//"github.com/t6kke/skill-calculator/internal/database"
 )
 
 func (api_config *apiConfig) handlerGetAllPublicLeagues(w http.ResponseWriter, r *http.Request) {

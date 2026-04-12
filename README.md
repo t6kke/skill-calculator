@@ -35,6 +35,13 @@ docker run -d -e PLATFORM="<environment>" \
 
 # Change log
 
+## v9.1
+
+- Fixed the BSC report used for listing tournaments in league
+- Added basic logging functionalty for verbose output of BCS execution
+- Added rank position number to ranking tables
+- First letter of names are converted to uppercase
+
 ## v9
 
 - Swithing BSC verion to use alpha5 version that includes Tournamentsoftware.com scraping

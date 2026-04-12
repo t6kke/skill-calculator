@@ -87,17 +87,24 @@ async function getLeageStandings(leagueID) {
             resultsList.appendChild(resultTable);
             header = resultTable.createTHead();
             row = resultTable.insertRow(0);
+            th0 = document.createElement("th");
             th1 = document.createElement("th");
             th2 = document.createElement("th");
+            th0.textContent = "Rank";
             th1.textContent = "Name";
             th2.textContent = "ELO";
+            row.appendChild(th0);
             row.appendChild(th1);
             row.appendChild(th2);
+            let rank_nbr = 0;
             for (const rank of category.ranking) {
+                rank_nbr++;
                 row = resultTable.insertRow();
+                cell0 = row.insertCell();
                 cellA = row.insertCell();
                 cellB = row.insertCell();
-                cellA.innerHTML = rank.name;
+                cell0.innerHTML = rank_nbr;
+                cellA.innerHTML = UpperName(rank.name);
                 cellB.innerHTML = rank.elo;
             }
         }
@@ -105,6 +112,18 @@ async function getLeageStandings(leagueID) {
         //alert(`Error: ${error.message}`);
         console.log(`Error: ${error.message}`)
     }
+}
+
+function UpperName(name) {
+    const exception_words = ["van", "de", "der"]
+    let name_parts = name.split(" ");
+    for (let i = 0; i < name_parts.length; i++) {
+        if (exception_words.includes(name_parts[i])) {
+            continue;
+        }
+        name_parts[i] = name_parts[i].charAt(0).toUpperCase() + name_parts[i].slice(1);
+    }
+    return name_parts.join(" ");
 }
 
 let currentLeague = null;
